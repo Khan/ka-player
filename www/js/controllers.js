@@ -49,12 +49,12 @@ angular.module('starter.controllers', [])
 })
 
 .controller('AddCtrl', function($scope, $http) {
-    $scope.updateProgramId = function() {
-        programId = $scope.form.programId;
+    $scope.onProgramIdUpdated = function() {
+        // programId = $scope.form.programId;
         // TODO(chelsea): Accept URLS as well as Ids
         // TODO(chelsea): Fetch the specific program ID
-    }
-    $scope.form = {}
+    };
+    $scope.form = {};
 })
 
 .controller('PlayerCtrl', function($scope, $stateParams, $sce) {
