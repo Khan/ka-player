@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module("starter.controllers", [])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
 
@@ -69,7 +69,8 @@ angular.module('starter.controllers', [])
                         id: extract_id_from_url(scratchpad.url),
                         title: scratchpad.title,
                         voteCount: scratchpad.sumVotesIncremented,
-                        spinoffCount: scratchpad.spinoffCount
+                        spinoffCount: scratchpad.spinoffCount,
+                        image: id_to_image_url(extract_id_from_url(scratchpad.url)),
                     });
                 });
 
@@ -199,6 +200,7 @@ angular.module('starter.controllers', [])
                         description: data.descriptionHtml,
                         voteCount: data.sumVotesIncremented,
                         spinoffCount: data.spinoffCount,
+                        image: id_to_image_url(id),
                     };
 
                     // now we need to do some further processing of the metadata,
@@ -249,6 +251,14 @@ angular.module('starter.controllers', [])
   });
 
   return service;
+})
+.directive("kaplayerProgramList", function() {
+  return {
+    scope: {
+      programs: '=info'
+    },
+    templateUrl: "templates/kaplayer-program-list.html"
+  }
 });
 
 var extract_id_from_url = function(url) {
