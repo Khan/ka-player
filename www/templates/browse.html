@@ -1,6 +1,7 @@
 <ion-view view-title="Browse">
-    <ion-tabs class="tabs-positive tabs-icon-only">
-      <ion-tab title="Hot" icon-on="ion-flame" icon-off="ion-flame">
+  <ion-tabs class="tabs-positive tabs-icon-only">
+    <ion-tab title="Hot" icon-on="ion-flame" icon-off="ion-flame">
+      <ion-content>
         <ion-list>
           <ion-item class="item item-thumbnail-left" ng-repeat="program in categories.hot" href="#/app/play/{{program.id}}">
             <img ng-src="{{program.imageURL}}" style="">
@@ -9,8 +10,10 @@
             <p>{{program.description}}</p>
           </ion-item>
         </ion-list>
-      </ion-tab>
-      <ion-tab title="Recent" icon-on="ion-clock" icon-off="ion-clock">
+      </ion-content>
+    </ion-tab>
+    <ion-tab title="Recent" icon-on="ion-clock" icon-off="ion-clock">
+      <ion-content>
         <ion-list>
           <ion-item class="item item-thumbnail-left" ng-repeat="program in recent_programs.programs" href="#/app/play/{{program.id}}">
             <img ng-src="{{program.image}}" style="">
@@ -19,8 +22,10 @@
             <p>{{program.description}}</p>
           </ion-item>
         </ion-list>
-      </ion-tab>
-      <ion-tab title="Contests" icon-on="ion-ribbon-b" icon-off="ion-ribbon-b">
+      </ion-content>
+    </ion-tab>
+    <ion-tab title="Contests" icon-on="ion-ribbon-b" icon-off="ion-ribbon-b">
+      <ion-content>
         <ion-list>
           <ion-item class="item item-thumbnail-left" ng-repeat="program in contest_programs.programs" href="#/app/play/{{program.id}}">
             <img ng-src="{{program.image}}" style="">
@@ -29,8 +34,10 @@
             <p>{{program.description}}</p>
           </ion-item>
         </ion-list>
-      </ion-tab>
-      <ion-tab title="Top" icon-on="ion-planet" icon-off="ion-planet">
+      </ion-content>
+    </ion-tab>
+    <ion-tab title="Top" icon-on="ion-planet" icon-off="ion-planet">
+      <ion-content>
         <ion-list>
           <ion-item class="item item-thumbnail-left" ng-repeat="program in top_programs.programs" href="#/app/play/{{program.id}}">
             <img ng-src="{{program.image}}" style="">
@@ -39,6 +46,7 @@
             <p>{{program.description}}</p>
           </ion-item>
         </ion-list>
-      </ion-tab>
-    </ion-tabs>
+      </ion-content>
+    </ion-tab>
+  </ion-tabs>
 </ion-view>

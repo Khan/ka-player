@@ -5,8 +5,8 @@
           <i class="icon ion-ios-star"></i>
         </button>
     </ion-nav-buttons>
-  <ion-content>
-          <iframe ng-src="{{url}}"
+    <ion-content scroll="false">
+      <iframe ng-src="{{url}}"
               width="{{iframeSize}}" height="{{iframeSize}}"
               style="transform: scale({{scaleFactor}}, {{scaleFactor}});
                 transform-origin: top left;
@@ -14,5 +14,5 @@
                 display: block;"
               scrolling="no"
               />
-  </ion-content>
+    </ion-content>
 </ion-view>
