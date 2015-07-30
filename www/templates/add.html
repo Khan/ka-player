@@ -1,8 +1,25 @@
 <ion-view view-title="Add a Program">
   <ion-content>
-    <div class="item">Enter the ID of a scratchpad to view:</div>
+    <div class="item">Enter the URL of a program you'd like to play:</div>
     <label class="item item-input">
-      <input type="text" placeholder="Program ID" ng-change="onProgramIdUpdated()" ng-model="form.programId">
+      <input type="text" placeholder="Program URL" ng-model="programURL" ng-change="onUpdateURL(programURL)">
     </label>
+
+    <div class="list card center" style="max-width: 200px;">
+
+      <!-- <div class="item">
+        <h2></h2>
+      </div> -->
+
+      <div class="item item-image">
+        <img ng-src="{{thumbnailUrl}}" alt="That isn't a valid program URL! :(">
+      </div>
+
+      <a class="item item-icon-left assertive" href="#/app/play/{{programId}}">
+        <i class="icon ion-play"></i>
+        Play
+      </a>
+
+    </div>
   </ion-content>
 </ion-view>

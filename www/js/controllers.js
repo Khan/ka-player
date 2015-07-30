@@ -49,12 +49,22 @@ angular.module('starter.controllers', [])
 })
 
 .controller('AddCtrl', function($scope, $http) {
-    $scope.onProgramIdUpdated = function() {
-        // programId = $scope.form.programId;
-        // TODO(chelsea): Accept URLS as well as Ids
-        // TODO(chelsea): Fetch the specific program ID
+    /**
+     * Called whenever the inputted program URL is updated.
+     * Updates the thumbnail and URL of the program whose URL was inputted.
+     * TODO(neel): grab more related metadata.
+     */
+    $scope.onUpdateURL = function(programURL) {
+        // program url is in format
+        // https://www.khanacademy.org/computer-programming/[slug]/[id]
+        // and we only care about the id
+        var urlChunks = programURL.split("/");
+        var programId = urlChunks.slice(-1)[0];
+        $scope.programId = programId;
+        $scope.thumbnailUrl = "https://www.khanacademy.org/" +
+            "computer-programming/ka-player/" +
+            programId + "/latest.png";
     };
-    $scope.form = {};
 })
 
 .controller('PlayerCtrl', function($scope, $stateParams, $sce) {
@@ -97,7 +107,7 @@ angular.module('starter.controllers', [])
     // we need to manually specify that it's trusted.
     // from http://stackoverflow.com/q/20045150/4839084
     $scope.url = $sce.trustAsResourceUrl(
-        "https://www.khanacademy.org/computer-programming/guess-my-number/" +
+        "https://www.khanacademy.org/computer-programming/ka-player/" +
         programId + "/embedded?embed=yes&article=yes&editor=no&buttons=no" +
         "&author=no&autoStart=yes&width=" + iframeSize +
         "&height=" + iframeSize);
