@@ -1,8 +1,8 @@
 <ion-view view-title="Favorites">
   <ion-content>
     <ion-list>
-      <ion-item class="item item-thumbnail-left" ng-repeat="program in programs" href="#/app/play/{{program.id}}">
-        <img ng-src="{{program.image}}" style="">
+      <ion-item class="item item-thumbnail-left" ng-repeat="program in getFavorites()" href="#/app/play/{{program.id}}">
+        <img ng-src="{{program.imageURL}}" style="">
         <h2>{{program.title}}</h2>
         <h4>{{program.voteCount}} Votes &middot; {{program.spinoffCount}} Spin-offs</h4>
         <p>{{program.description}}</p>

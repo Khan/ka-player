@@ -2,8 +2,8 @@
     <ion-tabs class="tabs-positive tabs-icon-only">
       <ion-tab title="Hot" icon-on="ion-flame" icon-off="ion-flame">
         <ion-list>
-          <ion-item class="item item-thumbnail-left" ng-repeat="program in hot_programs.programs" href="#/app/play/{{program.id}}">
-            <img ng-src="{{program.image}}" style="">
+          <ion-item class="item item-thumbnail-left" ng-repeat="program in categories.hot" href="#/app/play/{{program.id}}">
+            <img ng-src="{{program.imageURL}}" style="">
             <h2>{{program.title}}</h2>
             <h4>{{program.voteCount}} Votes &middot; {{program.spinoffCount}} Spin-offs</h4>
             <p>{{program.description}}</p>

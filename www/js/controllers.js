@@ -42,44 +42,50 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('BrowseCtrl', function($scope, $http) {
-  $scope.hot_programs = {
-      "sort": 3, //SORT_HOT
-      "programs": [],
-  };
-  $scope.recent_programs = {
-      "sort": 2, //SORT_RECENT
-      "programs": [],
-  };
-  $scope.contest_programs = {
-      "sort": 4, //SORT_OFFICIAL
-      "programs": [],
-  };
-  $scope.top_programs = {
-      "sort": 5, //SORT_UPVOTE
-      "programs": [],
-  };
+.controller('BrowseCtrl', function($scope, $http, programFactory) {
+    // generate a list of interesting categories (most recent, most popular,
+    // etc.) and fetch programs within those
+    // a mapping of category name to their sort key for use with
+    // khanacademy's API
+    var categoryMap = {
+        "hot": 3,
+        "recent": 2,
+        "contest": 4,
+        "upvote": 5
+    };
 
-  angular.forEach([$scope.hot_programs, $scope.recent_programs, $scope.contest_programs, $scope.top_programs], function(programs_object, key) {
-    var programs = programs_object.programs;
-    var sort = programs_object.sort;
-    $http.jsonp("https://www.khanacademy.org/api/internal/scratchpads/top?casing=camel&topic_id=xffde7c31&sort="+sort+"&limit=20&page=0&callback=JSON_CALLBACK")
-    .success(function(data, status, headers, config) {
-      angular.forEach(data.scratchpads, function(scratchpad, key) {
-        var program = {}
-        program.title = scratchpad.title;
-        program.id = extract_id_from_url(scratchpad.url);
-        program.image = id_to_image_url(program.id);
-        program.description = "";
-        programs.push(program);
-        add_metadata(program, $http);
-      });
+    // generate $scope.categories.hot, $scope.categories.recent, etc.
+    // each one will be the key, with the value being the list of programs
+    $scope.categories = {};
+    _.each(categoryMap, function(sortKey, categoryName) {
+        $http.jsonp("https://www.khanacademy.org/api/internal/scratchpads/top?" +
+                "casing=camel&topic_id=xffde7c31&sort=" + sortKey +
+                "&limit=20&page=0&callback=JSON_CALLBACK")
+            .success(function(data, status, headers, config) {
+                // data.scratchpads contains a list of programs, which we must
+                // convert to our format
+                var programs = _.map(data.scratchpads, function(scratchpad, key) {
+                    return programFactory.createProgram({
+                        id: extract_id_from_url(scratchpad.url),
+                        title: scratchpad.title,
+                        voteCount: scratchpad.sumVotesIncremented,
+                        spinoffCount: scratchpad.spinoffCount
+                    });
+                });
+
+                $scope.categories[categoryName] = programs;
+            });
     });
-  });
 })
 
 .controller('FavoritesCtrl', function($scope, programsService) {
-  $scope.programs = programsService.getFavorites();
+  $scope.programs = programsService.getPrograms();
+
+  $scope.getFavorites = function(){
+      return _.filter($scope.programs, function(program){
+          return program.favorite;
+      });
+  };
 })
 
 .controller('AddCtrl', function($scope, $http) {
@@ -142,36 +148,90 @@ angular.module('starter.controllers', [])
 })
 
 /**
- * Contains all your programs and methods to manage them.
+ * Utilities to create a new Program object. A program object is a collection
+ * of metadata about a program we're interested in showing information about.
  */
-.factory('programsService', function($http) {
+.factory('programFactory', function($http, $q){
+    var factory = {
+
+        /**
+         * Creates a program from the given metadata. Just adds some custom
+         * features to the metadata, like whether it's a favorite or not.
+         * This is useful if you're already loading a bunch of metadata from
+         * the API.
+         * @param  {Object} metadata Contains fields like:
+         *                           - id : String
+         *                           - title: String
+         *                           - voteCount : int
+         *                           - spinoffCount : int
+         */
+        createProgram: function(metadata){
+            // add some extra features to the program
+            var program = _.clone(metadata);
+            // whether the program has been saved as a favorite
+            program.favorite = true;
+            // thumbnail URL
+            program.imageURL = id_to_image_url(program.id);
+
+            return program;
+        },
+
+        /**
+         * Creates a new program from nothing more than its ID. Users will
+         * often just enter the ID of a program, but we need more metadata.
+         * Therefore, this makes an API call to retrieve more information
+         * about the program.
+         * @param  {String} id a numeric identifier of the program.
+         * @return {Promise}    returns a program object when it resolves.
+         */
+        createProgramFromId: function(id) {
+            // $http doesn't return a proper promise so we need to make
+            // a custom one
+            var deferred = $q.defer();
+
+            // grab more metadata by querying khanacademy.org
+            $http.jsonp('https://www.khanacademy.org/api/internal/scratchpads/' +
+                    id + '?callback=JSON_CALLBACK')
+                .success(function(data, status, headers, config) {
+                    var metadata = {
+                        id: id,
+                        title: data.title,
+                        description: data.descriptionHtml,
+                        voteCount: data.sumVotesIncremented,
+                        spinoffCount: data.spinoffCount,
+                    };
+
+                    // now we need to do some further processing of the metadata,
+                    // so pass it to the other handler
+                    var finishedProgram = factory.createProgram(metadata);
+                    deferred.resolve(finishedProgram);
+                });
+
+            return deferred.promise;
+        },
+    };
+
+    return factory;
+})
+
+/**
+ * Contains all your programs and methods to manage them.
+ * Only add a program here if you're intent on playing it.
+ */
+.factory('programsService', function($http, programFactory) {
 
     var programs = [];
 
   var service = {
       /**
-       * Adds a new program with the given ID to the list.
+       * Adds the given program (from programFactory) to the list.
        */
-      addProgram: function(id) {
-          var newProgram = {
-              id: id,
-              title: "New Program",
-              favorite: true,
-              image: id_to_image_url(id)
-          };
-          programs.push(newProgram);
-          add_metadata(newProgram, $http);
+      addProgram: function(program) {
+          programs.push(program);
       },
 
-      /**
-       * Returns all programsService
-       * @return {Object Array} an array of programs containing id's and other
-       *    metadata.
-       */
-      getFavorites: function() {
-          return _.filter(programs, function(program){
-              return program.favorite;
-          });
+      getPrograms: function() {
+          return programs
       }
   };
 
@@ -182,23 +242,14 @@ angular.module('starter.controllers', [])
       5406513695948800,
       6539939794780160
   ];
-  _.each(defaultIds, service.addProgram);
+  _.each(defaultIds, function(id){
+      programFactory.createProgramFromId(id).then(function(program){
+          service.addProgram(program);
+      });
+  });
 
   return service;
 });
-
-
-
-var add_metadata = function(program, $http) {
- // Fetch the values from khanacademy
-  $http.jsonp('https://www.khanacademy.org/api/internal/scratchpads/'+program.id+'?callback=JSON_CALLBACK')
-  .success(function(data, status, headers, config) {
-    program.title = data.title;
-    program.description = data.descriptionHtml;
-    program.voteCount = data.sumVotesIncremented;
-    program.spinoffCount = data.spinoffCount
-  });
-};
 
 var extract_id_from_url = function(url) {
     // program url is in format
