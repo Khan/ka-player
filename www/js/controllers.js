@@ -53,18 +53,6 @@ angular.module('starter.controllers', [])
         programId = $scope.form.programId;
         // TODO(chelsea): Accept URLS as well as Ids
         // TODO(chelsea): Fetch the specific program ID
-        alert("Messed with program ID.");
-    }
-    $scope.doTheThing = function() {
-        $http.get('http://www.google.com/').
-            success(function(data, status, headers, config) {
-                alert("Success!");
-            }).
-            error(function(data, status, headers, config) {
-                alert("Error!");
-                console.log(arguments);
-            });
-        
     }
     $scope.form = {}
 })
@@ -83,11 +71,13 @@ angular.module('starter.controllers', [])
     var scaleFactor = 1;
     var iframeSize = MIN_IFRAME_SIZE;
 
-    // if the window is larger than the program, give the program more space.
-    // don't scale it because then it gets pixelated.
-    if (windowWidth > MIN_IFRAME_SIZE && windowHeight > MIN_IFRAME_SIZE) {
-        iframeSize = Math.min(windowWidth, windowHeight);
-    }
+    // if the window is larger than the program, keep it the same size:
+    // if we scale it up then it gets pixelated, if we give the iframe more
+    // room the program may break since it may rely on being 400x400 -- so
+    // the program can grow no larger than 400x400
+    // if (windowWidth > MIN_IFRAME_SIZE && windowHeight > MIN_IFRAME_SIZE) {
+    //     iframeSize = Math.min(windowWidth, windowHeight);
+    // }
 
     // if the window is too small to fit the program, you can't reduce its
     // width or height, as that'd just truncate the program. instead, scale it
