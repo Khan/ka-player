@@ -1,8 +1,11 @@
 <ion-view view-title="Favorites">
   <ion-content>
     <ion-list>
-      <ion-item ng-repeat="program in programs" href="#/app/play/{{program.id}}">
-        {{program.title}}
+      <ion-item class="item item-thumbnail-left" ng-repeat="program in programs" href="#/app/play/{{program.id}}">
+        <img ng-src="https://www.khanacademy.org/computer-programming/p/{{program.id}}/latest.png" style="">
+        <h2>{{program.title}}</h2>
+        <h4>by Author</h4>
+        <p>with Fancy Description</p>
       </ion-item>
     </ion-list>
   </ion-content>
