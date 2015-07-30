@@ -61,6 +61,8 @@ angular.module('starter.controllers', [])
       program.title = data.title;
       program.image = "http://www.khanacademy.org" + data.imagePath;
       program.description = data.descriptionHtml;
+      program.voteCount = data.sumVotesIncremented;
+      program.spinoffCount = data.spinoffCount
     });
   };
   angular.forEach($scope.programs, function(program, key) {
