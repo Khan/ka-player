@@ -66,11 +66,11 @@ angular.module("starter.controllers", [])
                 // convert to our format
                 var programs = _.map(data.scratchpads, function(scratchpad, key) {
                     return programFactory.createProgram({
-                        id: extract_id_from_url(scratchpad.url),
+                        id: extractIdFromUrl(scratchpad.url),
                         title: scratchpad.title,
                         voteCount: scratchpad.sumVotesIncremented,
                         spinoffCount: scratchpad.spinoffCount,
-                        image: id_to_image_url(extract_id_from_url(scratchpad.url)),
+                        image: idToImageUrl(extractIdFromUrl(scratchpad.url)),
                     });
                 });
 
@@ -96,9 +96,9 @@ angular.module("starter.controllers", [])
      * TODO(neel): grab more related metadata.
      */
     $scope.onUpdateURL = function(programURL) {
-        var programId = extract_id_from_url(programURL);
+        var programId = extractIdFromUrl(programURL);
         $scope.programId = programId;
-        $scope.thumbnailUrl = id_to_image_url(programId);
+        $scope.thumbnailUrl = idToImageUrl(programId);
     };
 })
 
@@ -172,7 +172,7 @@ angular.module("starter.controllers", [])
             // whether the program has been saved as a favorite
             program.favorite = true;
             // thumbnail URL
-            program.imageURL = id_to_image_url(program.id);
+            program.imageURL = idToImageUrl(program.id);
 
             return program;
         },
@@ -200,7 +200,7 @@ angular.module("starter.controllers", [])
                         description: data.descriptionHtml,
                         voteCount: data.sumVotesIncremented,
                         spinoffCount: data.spinoffCount,
-                        image: id_to_image_url(id),
+                        image: idToImageUrl(id),
                     };
 
                     // now we need to do some further processing of the metadata,
@@ -261,7 +261,7 @@ angular.module("starter.controllers", [])
   }
 });
 
-var extract_id_from_url = function(url) {
+var extractIdFromUrl = function(url) {
     // program url is in format
     // https://www.khanacademy.org/computer-programming/[slug]/[id]
     // and we only care about the id
@@ -269,6 +269,6 @@ var extract_id_from_url = function(url) {
     return urlChunks.slice(-1)[0];
 }
 
-var id_to_image_url = function(id) {
+var idToImageUrl = function(id) {
     return "https://www.khanacademy.org/computer-programming/ka-player/"+id+"/latest.png";
 }
