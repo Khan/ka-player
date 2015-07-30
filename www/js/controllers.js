@@ -42,7 +42,6 @@ angular.module('starter.controllers', [])
 })
 
 
-
 .controller('BrowseCtrl', function($scope, $http) {
   $scope.hot_programs = {
       "sort": 3, //SORT_HOT
@@ -60,7 +59,7 @@ angular.module('starter.controllers', [])
       "sort": 5, //SORT_UPVOTE
       "programs": [],
   };
-  
+
   angular.forEach([$scope.hot_programs, $scope.recent_programs, $scope.contest_programs, $scope.top_programs], function(programs_object, key) {
     var programs = programs_object.programs;
     var sort = programs_object.sort;
@@ -79,21 +78,8 @@ angular.module('starter.controllers', [])
   });
 })
 
-
-.controller('FavoritesCtrl', function($scope, $http) {
-  // TODO: Populate this with the *actual* list of favorite programs.
-  $scope.programs = [
-    { id: 6095780544249856 },
-    { id: 5238695889338368 },
-    { id: 5406513695948800 },
-    { id: 6539939794780160 }
-  ];
-  angular.forEach($scope.programs, function(program, key) {
-    program.title = "";
-    program.description = "";
-    program.image = id_to_image_url(program.id);
-    add_metadata(program, $http);
-  });   
+.controller('FavoritesCtrl', function($scope, programsService) {
+  $scope.programs = programsService.getFavorites();
 })
 
 .controller('AddCtrl', function($scope, $http) {
@@ -153,6 +139,52 @@ angular.module('starter.controllers', [])
         programId + "/embedded?embed=yes&article=yes&editor=no&buttons=no" +
         "&author=no&autoStart=yes&width=" + iframeSize +
         "&height=" + iframeSize);
+})
+
+/**
+ * Contains all your programs and methods to manage them.
+ */
+.factory('programsService', function($http) {
+
+    var programs = [];
+
+  var service = {
+      /**
+       * Adds a new program with the given ID to the list.
+       */
+      addProgram: function(id) {
+          var newProgram = {
+              id: id,
+              title: "New Program",
+              favorite: true,
+              image: id_to_image_url(id)
+          };
+          programs.push(newProgram);
+          add_metadata(newProgram, $http);
+      },
+
+      /**
+       * Returns all programsService
+       * @return {Object Array} an array of programs containing id's and other
+       *    metadata.
+       */
+      getFavorites: function() {
+          return _.filter(programs, function(program){
+              return program.favorite;
+          });
+      }
+  };
+
+  // add in a bunch of default programs
+  var defaultIds = [
+      6095780544249856,
+      5238695889338368,
+      5406513695948800,
+      6539939794780160
+  ];
+  _.each(defaultIds, service.addProgram);
+
+  return service;
 });
 
 
