@@ -69,5 +69,43 @@ angular.module('starter.controllers', [])
 .controller('PlayerCtrl', function($scope, $stateParams, $sce) {
     var programId = $stateParams.programId;
     $scope.programId = programId;
-    $scope.url = $sce.trustAsResourceUrl("https://www.khanacademy.org/computer-programming/guess-my-number/" + programId + "/embedded?embed=yes&article=yes&editor=no&buttons=no&author=no&autoStart=yes&width=400&height=400");
+
+    // make the iframe at most as wide as the window
+    var windowWidth = angular.element(window).width();
+    var windowHeight = angular.element(window).height();
+    // KA programs get 400 pixels to work with, so they need at least that
+    // (any less and they get truncated)
+    var MIN_IFRAME_SIZE = 400;
+
+    var scaleFactor = 1;
+    var iframeSize = MIN_IFRAME_SIZE;
+
+    // if the window is larger than the program, give the program more space.
+    // don't scale it because then it gets pixelated.
+    if (windowWidth > MIN_IFRAME_SIZE && windowHeight > MIN_IFRAME_SIZE) {
+        iframeSize = Math.min(windowWidth, windowHeight);
+    }
+
+    // if the window is too small to fit the program, you can't reduce its
+    // width or height, as that'd just truncate the program. instead, scale it
+    // down to simulate it being shrunk.
+    // keep width & height the same to maintain square aspect ratio.
+    if (windowWidth < MIN_IFRAME_SIZE || windowHeight < MIN_IFRAME_SIZE) {
+        scaleFactor = Math.min(windowWidth, windowHeight) / MIN_IFRAME_SIZE;
+    }
+
+    $scope.iframeSize = iframeSize;
+    $scope.scaleFactor = scaleFactor;
+
+    console.log("Rendering program at size " + iframeSize +
+        " and scale " + scaleFactor);
+
+    // angular usually won't let us interpolate a variable in an iframe url.
+    // we need to manually specify that it's trusted.
+    // from http://stackoverflow.com/q/20045150/4839084
+    $scope.url = $sce.trustAsResourceUrl(
+        "https://www.khanacademy.org/computer-programming/guess-my-number/" +
+        programId + "/embedded?embed=yes&article=yes&editor=no&buttons=no" +
+        "&author=no&autoStart=yes&width=" + iframeSize +
+        "&height=" + iframeSize);
 });

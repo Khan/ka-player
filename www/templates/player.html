@@ -1,8 +1,11 @@
 <ion-view view-title="Player">
   <ion-content>
           <iframe ng-src="{{url}}"
-              width="400" height="400"
-              style="transform: scale(0.7, 0.7)"
+              width="{{iframeSize}}" height="{{iframeSize}}"
+              style="transform: scale({{scaleFactor}}, {{scaleFactor}});
+                transform-origin: top left;
+                margin: auto;
+                display: block;"
               />
   </ion-content>
 </ion-view>
