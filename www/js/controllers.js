@@ -41,11 +41,31 @@ angular.module('starter.controllers', [])
   // };
 })
 
-.controller('FavoritesCtrl', function($scope) {
+.controller('FavoritesCtrl', function($scope, $http) {
+  // TODO: Populate this with the *actual* list of favorite programs.
   $scope.programs = [
-    { title: 'Guess My Number', id: 6095780544249856 },
-    { title: 'Squirtle', id: 6539939794780160 }
+    { id: 6095780544249856 },
+    { id: 5238695889338368 },
+    { id: 5406513695948800 },
+    { id: 6539939794780160 }
   ];
+  add_metadata = function(program) {
+    // Default values for these fields
+    program.title = "";
+    program.description = "";
+    program.image = "https://www.khanacademy.org/computer-programming/p/'+program.id+'/latest.png";
+
+    // Fetch the values from khanacademy
+    $http.jsonp('https://www.khanacademy.org/api/internal/scratchpads/'+program.id+'?callback=JSON_CALLBACK')
+    .success(function(data, status, headers, config) {
+      program.title = data.title;
+      program.image = "http://www.khanacademy.org" + data.imagePath;
+      program.description = data.descriptionHtml;
+    });
+  };
+  angular.forEach($scope.programs, function(program, key) {
+    add_metadata(program);
+  });   
 })
 
 .controller('AddCtrl', function($scope, $http) {
