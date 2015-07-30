@@ -1,5 +1,8 @@
 <ion-view view-title="Add a Program">
   <ion-content>
-    <h1>Add</h1>
+    <div class="item">Enter the ID of a scratchpad to view:</div>
+    <label class="item item-input">
+      <input type="text" placeholder="Program ID" ng-change="updateProgramId()" ng-model="form.programId">
+    </label>
   </ion-content>
 </ion-view>

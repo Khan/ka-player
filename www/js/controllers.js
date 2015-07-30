@@ -48,7 +48,22 @@ angular.module('starter.controllers', [])
   ];
 })
 
-.controller('AddCtrl', function($scope) {
+.controller('AddCtrl', function($scope, $http) {
+    $scope.updateProgramId = function() {
+        programId = $scope.form.programId;
+        // TODO(chelsea): Accept URLS as well as Ids
+        // TODO(chelsea): Fetch the specific program ID
+        var config = {headers: {"Accept": "image/png"}};
+        $http.get('https://www.khanacademy.org/computer-programming/asdf/6539939794780160/5649050225344512.png', config).
+            success(function(data, status, headers, config) {
+                alert("Success!");
+            }).
+            error(function(data, status, headers, config) {
+                alert("Error!");
+            });
+        
+    }
+    $scope.form = {}
 })
 
 .controller('PlayerCtrl', function($scope, $stateParams, $sce) {
