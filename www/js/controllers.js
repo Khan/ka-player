@@ -53,13 +53,16 @@ angular.module('starter.controllers', [])
         programId = $scope.form.programId;
         // TODO(chelsea): Accept URLS as well as Ids
         // TODO(chelsea): Fetch the specific program ID
-        var config = {headers: {"Accept": "image/png"}};
-        $http.get('https://www.khanacademy.org/computer-programming/asdf/6539939794780160/5649050225344512.png', config).
+        alert("Messed with program ID.");
+    }
+    $scope.doTheThing = function() {
+        $http.get('http://www.google.com/').
             success(function(data, status, headers, config) {
                 alert("Success!");
             }).
             error(function(data, status, headers, config) {
                 alert("Error!");
+                console.log(arguments);
             });
         
     }
