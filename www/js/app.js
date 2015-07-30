@@ -59,6 +59,15 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
+    .state('app.browse', {
+      url: '/browse',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/browse.html',
+          controller: 'BrowseCtrl'
+        }
+      }
+    })
 
   .state('app.player', {
     url: '/play/:programId',

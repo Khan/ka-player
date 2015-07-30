@@ -41,6 +41,45 @@ angular.module('starter.controllers', [])
   // };
 })
 
+
+
+.controller('BrowseCtrl', function($scope, $http) {
+  $scope.hot_programs = {
+      "sort": 3, //SORT_HOT
+      "programs": [],
+  };
+  $scope.recent_programs = {
+      "sort": 2, //SORT_RECENT
+      "programs": [],
+  };
+  $scope.contest_programs = {
+      "sort": 4, //SORT_OFFICIAL
+      "programs": [],
+  };
+  $scope.top_programs = {
+      "sort": 5, //SORT_UPVOTE
+      "programs": [],
+  };
+  
+  angular.forEach([$scope.hot_programs, $scope.recent_programs, $scope.contest_programs, $scope.top_programs], function(programs_object, key) {
+    var programs = programs_object.programs;
+    var sort = programs_object.sort;
+    $http.jsonp("https://www.khanacademy.org/api/internal/scratchpads/top?casing=camel&topic_id=xffde7c31&sort="+sort+"&limit=20&page=0&callback=JSON_CALLBACK")
+    .success(function(data, status, headers, config) {
+      angular.forEach(data.scratchpads, function(scratchpad, key) {
+        var program = {}
+        program.title = scratchpad.title;
+        program.id = extract_id_from_url(scratchpad.url);
+        program.image = id_to_image_url(program.id);
+        program.description = "";
+        programs.push(program);
+        add_metadata(program, $http);
+      });
+    });
+  });
+})
+
+
 .controller('FavoritesCtrl', function($scope, $http) {
   // TODO: Populate this with the *actual* list of favorite programs.
   $scope.programs = [
@@ -49,24 +88,11 @@ angular.module('starter.controllers', [])
     { id: 5406513695948800 },
     { id: 6539939794780160 }
   ];
-  add_metadata = function(program) {
-    // Default values for these fields
+  angular.forEach($scope.programs, function(program, key) {
     program.title = "";
     program.description = "";
-    program.image = "https://www.khanacademy.org/computer-programming/p/'+program.id+'/latest.png";
-
-    // Fetch the values from khanacademy
-    $http.jsonp('https://www.khanacademy.org/api/internal/scratchpads/'+program.id+'?callback=JSON_CALLBACK')
-    .success(function(data, status, headers, config) {
-      program.title = data.title;
-      program.image = "http://www.khanacademy.org" + data.imagePath;
-      program.description = data.descriptionHtml;
-      program.voteCount = data.sumVotesIncremented;
-      program.spinoffCount = data.spinoffCount
-    });
-  };
-  angular.forEach($scope.programs, function(program, key) {
-    add_metadata(program);
+    program.image = id_to_image_url(program.id);
+    add_metadata(program, $http);
   });   
 })
 
@@ -77,15 +103,9 @@ angular.module('starter.controllers', [])
      * TODO(neel): grab more related metadata.
      */
     $scope.onUpdateURL = function(programURL) {
-        // program url is in format
-        // https://www.khanacademy.org/computer-programming/[slug]/[id]
-        // and we only care about the id
-        var urlChunks = programURL.split("/");
-        var programId = urlChunks.slice(-1)[0];
+        var programId = extract_id_from_url(programURL);
         $scope.programId = programId;
-        $scope.thumbnailUrl = "https://www.khanacademy.org/" +
-            "computer-programming/ka-player/" +
-            programId + "/latest.png";
+        $scope.thumbnailUrl = id_to_image_url(programId);
     };
 })
 
@@ -134,3 +154,28 @@ angular.module('starter.controllers', [])
         "&author=no&autoStart=yes&width=" + iframeSize +
         "&height=" + iframeSize);
 });
+
+
+
+var add_metadata = function(program, $http) {
+ // Fetch the values from khanacademy
+  $http.jsonp('https://www.khanacademy.org/api/internal/scratchpads/'+program.id+'?callback=JSON_CALLBACK')
+  .success(function(data, status, headers, config) {
+    program.title = data.title;
+    program.description = data.descriptionHtml;
+    program.voteCount = data.sumVotesIncremented;
+    program.spinoffCount = data.spinoffCount
+  });
+};
+
+var extract_id_from_url = function(url) {
+    // program url is in format
+    // https://www.khanacademy.org/computer-programming/[slug]/[id]
+    // and we only care about the id
+    var urlChunks = url.split("/");
+    return urlChunks.slice(-1)[0];
+}
+
+var id_to_image_url = function(id) {
+    return "https://www.khanacademy.org/computer-programming/ka-player/"+id+"/latest.png";
+}
