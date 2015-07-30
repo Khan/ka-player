@@ -1,1 +1,14 @@
 /* Empty. Add your own CSS if you like */
+@font-face {
+    font-family: "Proxima Nova";
+    src: url("https://www.khanacademy.org/fonts/Proxima-Nova-Regular.woff") format('woff');
+}
+@font-face {
+    font-family: "Proxima Nova";
+    src: url("https://www.khanacademy.org/fonts/Proxima-Nova-Semibold.woff") format('woff');
+    font-weight: bold;
+}
+
+h1, h2, h3, h4, p, body, a, div, span {
+    font-family: "Proxima Nova";
+}
