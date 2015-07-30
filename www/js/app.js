@@ -61,7 +61,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     })
 
   .state('app.player', {
-    url: '/play/:scratchpadId',
+    url: '/play/:programId',
     views: {
       'menuContent': {
         templateUrl: 'templates/player.html',
