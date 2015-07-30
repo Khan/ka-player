@@ -52,5 +52,8 @@ angular.module('starter.controllers', [])
   ];
 })
 
+.controller('AddCtrl', function($scope) {
+})
+
 .controller('PlayerCtrl', function($scope, $stateParams) {
 });
