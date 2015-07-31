@@ -8,6 +8,10 @@ angular.module("starter.controllers", [
 
 })
 
+.controller('MakeYourOwnCtrl', function($scope) {
+
+})
+
 
 .controller('BrowseCtrl', function($scope, $http, programFactory) {
     // generate a list of interesting categories (most recent, most popular,

@@ -68,16 +68,25 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
-
-  .state('app.player', {
-    url: '/play/:programId',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/player.html',
-        controller: 'PlayerCtrl'
+    .state('app.makeYourOwn', {
+      url: '/makeYourOwn',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/makeYourOwn.html',
+          controller: 'MakeYourOwnCtrl'
+        }
       }
-    }
-  });
+    })
+
+    .state('app.player', {
+      url: '/play/:programId',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/player.html',
+          controller: 'PlayerCtrl'
+        }
+      }
+    });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/favorites');
 });
