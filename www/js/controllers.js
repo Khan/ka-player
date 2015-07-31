@@ -1,4 +1,6 @@
-angular.module("starter.controllers", [])
+angular.module("starter.controllers", [
+    'LocalStorageModule'
+])
 .config(function ($sceDelegateProvider) {
     $sceDelegateProvider.resourceUrlWhitelist(['self', '*khanacademy.org*', 'http://www.khanacademy.org/', 'https://www.khanacademy.org/', 'http://khanacademy.org/', 'https://khanacademy.org/']);
 })
@@ -317,17 +319,40 @@ angular.module("starter.controllers", [])
  * Only add a program here if you're intent on playing it.
  * A data store of programs the user has played or has favorited.
  */
-.factory('programsService', function($http, programFactory, $q) {
+.factory('programsService', function($http, programFactory, $q, $rootScope, localStorageService) {
 
-  var programs = [];
+  $rootScope.programs = [];
+  var LOCALSTORAGE_KEY = 'programs';
 
   var service = {
+      /**
+       * Saves the current list of programs to localStorage.
+       */
+      _updateLocalStorage: function(){
+          localStorageService.set(LOCALSTORAGE_KEY, $rootScope.programs);
+      },
+
+      /**
+      * Loads all programs from localStorage, if any exist.
+      * @return {boolean} true if there were programs stored in LocalStorage,
+      *                   false otherwise.
+      */
+      loadFromLocalStorage: function() {
+          var storedPrograms = localStorageService.get(LOCALSTORAGE_KEY);
+          if (storedPrograms && !_.isEmpty(storedPrograms)) {
+              $rootScope.programs = storedPrograms;
+              return true;
+          } else {
+              return false;
+          }
+      },
+
       /**
        * Returns all programs that have been stored.
        * @return {Program[]}
        */
       getAllPrograms: function() {
-          return programs;
+          return $rootScope.programs;
       },
 
       /**
@@ -336,16 +361,9 @@ angular.module("starter.controllers", [])
        * to the list.
        */
       getProgramById: function(programId) {
-          return _.find(programs, function(program){
+          return _.find($rootScope.programs, function(program) {
               return program.id === programId;
           });
-      },
-
-      /**
-       * Adds the given program to the data store.
-       */
-      insertProgram: function(program){
-          programs.push(program);
       },
 
       /**
@@ -379,23 +397,50 @@ angular.module("starter.controllers", [])
 
           return deferred.promise;
       },
+
+
+      // the following methods mutate the state of the programs
+
+      /**
+       * Adds the given program to the data store and updates localStorage.
+       */
+      insertProgram: function(program) {
+          $rootScope.programs.push(program);
+          service._updateLocalStorage();
+      },
   };
 
-  // add in a bunch of default programs
-  var defaultIds = [
-      6095780544249856,
-      5238695889338368,
-      5406513695948800,
-      6539939794780160
-  ];
-  var programPromises = _.map(defaultIds, service.addProgramById);
-  $q.all(programPromises)
-    .then(function(programs){
-        // make these all favorites
-        _.each(programs, function(program){
-            program.favorite = true;
-        });
-    });
+  // load programs from localStorage if they exist
+  var wasStored = service.loadFromLocalStorage();
+
+  // if there's nothing stored, load a bunch of default programs
+  if (!wasStored) {
+      // add in a bunch of default programs
+      var defaultIds = [
+          6095780544249856,
+          5238695889338368,
+          5406513695948800,
+          6539939794780160
+      ];
+      var programPromises = _.map(defaultIds, service.addProgramById);
+      $q.all(programPromises)
+          .then(function(programs) {
+              // make these all favorites
+              _.each(programs, function(program) {
+                  program.favorite = true;
+              });
+
+              // save updates b/c programs have been marked as favorites
+              // service._updateLocalStorage();
+          });
+  }
+
+  // update the stored programs whenever a program is added, removed, favorited,
+  // etc.
+  // last parameter is true so that we watch deeply
+  $rootScope.$watch('programs', function(){
+      service._updateLocalStorage();
+  }, true)
 
   return service;
 })
