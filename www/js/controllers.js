@@ -103,7 +103,7 @@ angular.module("starter.controllers", [])
     };
 })
 
-.controller('PlayerCtrl', function($scope, $stateParams, $sce, programFactory) {
+.controller('PlayerCtrl', function($scope, $stateParams, $sce, programsService) {
     var programId = $stateParams.programId;
     $scope.programId = programId;
 
@@ -148,9 +148,7 @@ angular.module("starter.controllers", [])
         "&author=no&autoStart=yes&width=" + iframeSize +
         "&height=" + iframeSize);
 
-    programFactory.createProgramFromId(programId).then(function(program) {
-        $scope.program = program;
-    });
+    $scope.program = programsService.getProgramById(programId);
 
     $scope.markFavorite = function() {
         // TODO(chelsea): This doesn't work!
@@ -221,6 +219,7 @@ angular.module("starter.controllers", [])
 
             return deferred.promise;
         },
+
     };
 
     return factory;
@@ -244,7 +243,21 @@ angular.module("starter.controllers", [])
 
       getPrograms: function() {
           return programs
-      }
+      },
+
+      getProgramById: function(id) {
+        if (id in service.getPrograms()) {
+          return service.getPrograms()[id];
+        } else {
+          // TODO: this is probably an anti-pattern
+          var output;
+          programFactory.createProgramFromId(id).then(function(program){
+            output = program;
+          });
+          service.addProgram(program);
+          return output;
+        }
+      },
   };
 
   // add in a bunch of default programs
@@ -260,20 +273,6 @@ angular.module("starter.controllers", [])
           program.favorite = true;
       });
   });
-
-  var getProgramById = function(id) {
-    if (id in programsService.service.getPrograms()) {
-      return service.getPrograms()[id];
-    } else {
-      // TODO: this is probably an anti-pattern
-      var output;
-      programFactory.createProgramFromId(id).then(function(program){
-        output = program;
-      });
-      service.addProgram(program);
-      return output;
-    }
-  }
 
   return service;
 })
