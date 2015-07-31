@@ -318,9 +318,6 @@ angular.module("starter.controllers", [])
         _.each(programs, function(program){
             program.favorite = true;
         });
-    })
-    .then(function(){
-        console.log("X", service.getAllPrograms());
     });
   //
   // // for testing
