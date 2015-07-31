@@ -90,12 +90,11 @@ angular.module("starter.controllers", [])
 
 .controller('FavoritesCtrl', function($scope, programsService) {
   $scope.programs = programsService.getPrograms();
+  $scope.favorites = programsService.getPrograms();
 
-  $scope.getFavorites = function(){
-      return _.filter($scope.programs, function(program){
-          return program.favorite;
-      });
-  };
+  $scope.$watch('programs', function(oldValue, newValue){
+      $scope.favorites = newValue;
+  });
 })
 
 .controller('AddCtrl', function($scope, $http) {
@@ -286,6 +285,15 @@ angular.module("starter.controllers", [])
           program.favorite = true;
       });
   });
+
+  // for testing
+  _.delay(function(){
+      programFactory.createProgramFromId(5536800924893184).then(function(program){
+          console.log("Adding", program.title);
+          service.addProgram(program);
+          program.favorite = true;
+      });
+  }, 5000);
 
   return service;
 })
