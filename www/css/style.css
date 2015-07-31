@@ -9,6 +9,6 @@
     font-weight: bold;
 }
 
-h1, h2, h3, h4, p, body, a, div, span {
+h1, h2, h3, h4, p, body, a, div, span, input {
     font-family: "Proxima Nova";
 }
