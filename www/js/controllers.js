@@ -88,6 +88,34 @@ angular.module("starter.controllers", [])
     $scope.doRefresh();
 })
 
+.controller('SearchCtrl', function($scope, $http, programFactory, programsService, $ionicLoading) {
+
+  $http.jsonp("https://www.khanacademy.org/api/internal/scratchpads/top?" +
+                "casing=camel&topic_id=xffde7c31&sort=5&limit=500&page=0&callback=JSON_CALLBACK")
+    .success(function(data, status, headers, config) {
+        // data.scratchpads contains a list of programs, which we must
+        // convert to our format
+        var programs = _.map(data.scratchpads, function(scratchpad, key) {
+            return programFactory.createProgram({
+                id: extractIdFromUrl(scratchpad.url),
+                title: scratchpad.title,
+                voteCount: scratchpad.sumVotesIncremented,
+                spinoffCount: scratchpad.spinoffCount,
+            });
+        });
+
+        $scope.programs = programs;
+    })
+    .finally(function() {
+      // hide the ionic loading page
+      $ionicLoading.hide();
+    });
+
+  $scope.clearSearch = function() {
+    $scope.search.value = '';
+  }
+})
+
 .controller('FavoritesCtrl', function($scope, programsService) {
   $scope.programs = programsService.getPrograms();
   $scope.favorites = programsService.getPrograms();
@@ -156,14 +184,11 @@ angular.module("starter.controllers", [])
         "&height=" + iframeSize);
 
     $scope.program = programsService.getProgramById(programId);
-    debugger
     $scope.markFavorite = function() {
         // TODO(chelsea): This doesn't work!
-        debugger
         $scope.program.favorite = !$scope.program.favorite;
     }
 })
-
 /**
  * Utilities to create a new Program object. A program object is a collection
  * of metadata about a program we're interested in showing information about.
@@ -233,6 +258,50 @@ angular.module("starter.controllers", [])
     return factory;
 })
 
+/**
+ * Adding an ion search directive taken from http://codepen.io/gastonbesada/pen/eqvJK
+ */
+
+.directive('ionSearch', function() {
+  return {
+      restrict: 'E',
+      replace: true,
+      scope: {
+          getData: '&source',
+          model: '=?',
+          search: '=?filter'
+      },
+      link: function(scope, element, attrs) {
+          attrs.minLength = attrs.minLength || 0;
+          scope.placeholder = attrs.placeholder || '';
+          scope.search = {value: ''};
+
+          if (attrs.class)
+              element.addClass(attrs.class);
+
+          if (attrs.source) {
+              scope.$watch('search.value', function (newValue, oldValue) {
+                  if (newValue.length > attrs.minLength) {
+                      scope.getData({str: newValue}).then(function (results) {
+                          scope.model = results;
+                      });
+                  } else {
+                      scope.model = [];
+                  }
+              });
+          }
+
+          scope.clearSearch = function() {
+              scope.search.value = '';
+          };
+      },
+      template: '<div class="item-input-wrapper">' +
+                  '<i class="icon ion-android-search"></i>' +
+                  '<input type="search" placeholder="{{placeholder}}" ng-model="search.value">' +
+                  '<i ng-if="search.value.length > 0" ng-click="clearSearch()" class="icon ion-close"></i>' +
+                '</div>'
+  };
+})
 /**
  * Contains all your programs and methods to manage them.
  * Only add a program here if you're intent on playing it.

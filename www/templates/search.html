@@ -1,6 +1,17 @@
 <ion-view view-title="Search">
   <ion-content>
-    <h1>Search</h1>
-
+    <div class="bar bar-header item-input-inset">
+        <ion-search placeholder="Search a user" filter="search"></ion-search>
+    </div>
+    <ion-list>
+      <ion-item class="item item-thumbnail-left"
+            ng-repeat="program in programs | filter:search.value | limitTo:20"
+            href="#/app/play/{{program.id}}">
+        <img ng-src="{{program.imageURL}}" style="">
+        <h2>{{program.title}}</h2>
+        <h4>{{program.voteCount}} Votes &middot; {{program.spinoffCount}} Spin-offs</h4>
+        <p>{{program.description}}</p>
+      </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>

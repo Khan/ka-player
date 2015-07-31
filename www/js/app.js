@@ -32,15 +32,6 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     controller: 'AppCtrl'
   })
 
-  .state('app.search', {
-    url: '/search',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/search.html'
-      }
-    }
-  })
-
   .state('app.add', {
       url: '/add',
       views: {
@@ -65,6 +56,15 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         'menuContent': {
           templateUrl: 'templates/browse.html',
           controller: 'BrowseCtrl'
+        }
+      }
+    })
+    .state('app.search', {
+      url: '/search',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/search.html',
+          controller: 'SearchCtrl'
         }
       }
     })
