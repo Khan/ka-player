@@ -1,6 +1,6 @@
 <ion-list>
   <ion-item class="item item-thumbnail-left"
-        ng-repeat="program in programs | filter:favorite"
+        ng-repeat="program in programs"
         href="#/app/play/{{program.id}}">
     <img ng-src="{{program.imageURL}}" style="">
     <h2>{{program.title}}</h2>
