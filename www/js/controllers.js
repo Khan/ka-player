@@ -450,10 +450,10 @@ angular.module("starter.controllers", [
   if (!wasStored) {
       // add in a bunch of default programs
       var defaultIds = [
-          6095780544249856,
-          5238695889338368,
-          5406513695948800,
-          6539939794780160
+          6095780544249856, // Guess my number 2
+          5238695889338368, // What apples are great for
+          938561708, // Mercury subspace
+          6539939794780160 // Squirtle/Wartortle/Blastoise
       ];
       var programPromises = _.map(defaultIds, service.addProgramById);
       $q.all(programPromises)
