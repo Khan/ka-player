@@ -77,7 +77,6 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
-
     .state('app.player', {
       url: '/play/:programId',
       views: {
