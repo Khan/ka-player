@@ -331,12 +331,15 @@ angular.module("starter.controllers", [])
 
   return service;
 })
-.directive("kaplayerProgramList", function() {
+/**
+ * Renders a list item for a particular program.
+ */
+.directive("kaplayerProgramListItem", function() {
   return {
     scope: {
-      programs: '=info'
+      program: '=program'
     },
-    templateUrl: "templates/kaplayer-program-list.html"
+    templateUrl: "templates/kaplayer-program-list-item.html"
   }
 });
 

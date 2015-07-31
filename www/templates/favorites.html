@@ -1,5 +1,7 @@
 <ion-view view-title="Favorites">
-  <ion-content>
-    <kaplayer-program-list info="programs" />
-  </ion-content>
+    <ion-content>
+        <ion-list>
+            <kaplayer-program-list-item  ng-repeat="program in programs" program="program" />
+        </ion-list>
+    </ion-content>
 </ion-view>
