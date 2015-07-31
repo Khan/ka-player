@@ -151,6 +151,12 @@ angular.module("starter.controllers", [])
     programFactory.createProgramFromId(programId).then(function(program) {
         $scope.program = program;
     });
+
+    $scope.markFavorite = function() {
+        alert("Clicked the star. (TODO: mark as favorite as a consequence)");
+        // TODO(chelsea): This doesn't work!
+        $scope.program.favorite = true;
+    }
 })
 
 /**
@@ -175,7 +181,7 @@ angular.module("starter.controllers", [])
             // add some extra features to the program
             var program = _.clone(metadata);
             // whether the program has been saved as a favorite
-            program.favorite = true;
+            program.favorite = false;
             // thumbnail URL
             program.imageURL = idToImageUrl(program.id);
 
@@ -227,14 +233,14 @@ angular.module("starter.controllers", [])
  */
 .factory('programsService', function($http, programFactory) {
 
-    var programs = [];
+  var programs = {};
 
   var service = {
       /**
        * Adds the given program (from programFactory) to the list.
        */
       addProgram: function(program) {
-          programs.push(program);
+          programs[program.id] = program;
       },
 
       getPrograms: function() {
@@ -252,8 +258,23 @@ angular.module("starter.controllers", [])
   _.each(defaultIds, function(id){
       programFactory.createProgramFromId(id).then(function(program){
           service.addProgram(program);
+          program.favorite = true;
       });
   });
+
+  var getProgramById = function(id) {
+    if (id in programsService.service.getPrograms()) {
+      return service.getPrograms()[id];
+    } else {
+      // TODO: this is probably an anti-pattern
+      var output;
+      programFactory.createProgramFromId(id).then(function(program){
+        output = program;
+      });
+      service.addProgram(program);
+      return output;
+    }
+  }
 
   return service;
 })
