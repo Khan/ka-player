@@ -1,8 +1,6 @@
 <ion-view view-title="Search">
   <ion-content>
-    <div class="bar bar-header item-input-inset">
-        <ion-search placeholder="Search a user" filter="search"></ion-search>
-    </div>
+    <ion-search placeholder="Search a user" filter="search"></ion-search>
     <ion-list ng-if="search.value">
         <kaplayer-program-list-item
             ng-repeat="program in programs | filter:search.value | limitTo:20"

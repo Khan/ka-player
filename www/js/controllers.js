@@ -309,11 +309,7 @@ angular.module("starter.controllers", [])
               scope.search.value = '';
           };
       },
-      template: '<div class="item-input-wrapper">' +
-                  '<i class="icon ion-android-search"></i>' +
-                  '<input type="search" placeholder="{{placeholder}}" ng-model="search.value">' +
-                  '<i ng-if="search.value.length > 0" ng-click="clearSearch()" class="icon ion-close"></i>' +
-                '</div>'
+      templateUrl: "templates/ion-search.html"
   };
 })
 /**
