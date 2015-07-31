@@ -149,7 +149,7 @@ angular.module("starter.controllers", [])
         "&height=" + iframeSize);
 
     $scope.program = programsService.getProgramById(programId);
-
+    debugger
     $scope.markFavorite = function() {
         // TODO(chelsea): This doesn't work!
         $scope.program.favorite = !$scope.program.favorite;
@@ -247,15 +247,18 @@ angular.module("starter.controllers", [])
 
       getProgramById: function(id) {
         if (id in service.getPrograms()) {
+          debugger
           return service.getPrograms()[id];
         } else {
-          // TODO: this is probably an anti-pattern
-          var output;
-          programFactory.createProgramFromId(id).then(function(program){
-            output = program;
+          programFactory.createProgramFromId(id)
+          .then(function(program){
+            service.addProgram(program);
+            return program;
+          })
+          .catch(function(response){
+            console.log("getProgramById failed: " + response.data)
+            return null
           });
-          service.addProgram(program);
-          return output;
         }
       },
   };
