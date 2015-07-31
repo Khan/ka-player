@@ -1,64 +1,64 @@
 <ion-view view-title="Browse">
   <ion-tabs class="tabs-icon-top">
     <ion-tab title="Hot" icon-on="ion-flame" icon-off="ion-flame">
-      <ion-content>
+      <ion-view><ion-content>
         <ion-refresher
-          pulling-text="Pull to refresh..."
-          on-refresh="doRefresh()">
+           pulling-text="Pull to refresh..."
+           on-refresh="doRefresh()">
         </ion-refresher>
         <ion-list>
-            <kaplayer-program-list-item ng-repeat="program in categories.hot.programs" program="program">
+          <kaplayer-program-list-item ng-repeat="program in categories.hot.programs" program="program">
         </ion-list>
         <ion-infinite-scroll
-          on-infinite="loadMore('hot')"
-          distance="1%">
+           on-infinite="loadMore('hot')"
+           distance="1%">
         </ion-infinite-scroll>
-      </ion-content>
+      </ion-content></ion-view>
     </ion-tab>
     <ion-tab title="Recent" icon-on="ion-clock" icon-off="ion-clock">
-      <ion-content>
+      <ion-view><ion-content>
         <ion-refresher
-          pulling-text="Pull to refresh..."
-          on-refresh="doRefresh()">
+           pulling-text="Pull to refresh..."
+           on-refresh="doRefresh()">
         </ion-refresher>
         <ion-list>
-            <kaplayer-program-list-item ng-repeat="program in categories.recent.programs" program="program">
+          <kaplayer-program-list-item ng-repeat="program in categories.recent.programs" program="program">
         </ion-list>
         <ion-infinite-scroll
-          on-infinite="loadMore('recent')"
-          distance="1%">
+           on-infinite="loadMore('recent')"
+           distance="1%">
         </ion-infinite-scroll>
-      </ion-content>
+      </ion-content></ion-view>
     </ion-tab>
     <ion-tab title="Contests" icon-on="ion-ribbon-b" icon-off="ion-ribbon-b">
-      <ion-content>
+      <ion-view><ion-content>
         <ion-refresher
-          pulling-text="Pull to refresh..."
-          on-refresh="doRefresh()">
+           pulling-text="Pull to refresh..."
+           on-refresh="doRefresh()">
         </ion-refresher>
         <ion-list>
-            <kaplayer-program-list-item ng-repeat="program in categories.contest.programs" program="program">
-            <ion-infinite-scroll
-              on-infinite="loadMore('contest')"
-              distance="1%">
-            </ion-infinite-scroll>
-        </ion-list>
-      </ion-content>
-    </ion-tab>
-    <ion-tab title="Top" icon-on="ion-trophy" icon-off="ion-trophy">
-      <ion-content>
-        <ion-refresher
-          pulling-text="Pull to refresh..."
-          on-refresh="doRefresh()">
-        </ion-refresher>
-        <ion-list>
-            <kaplayer-program-list-item ng-repeat="program in categories.top.programs" program="program">
+          <kaplayer-program-list-item ng-repeat="program in categories.contest.programs" program="program">
         </ion-list>
         <ion-infinite-scroll
-          on-infinite="loadMore('top')"
-          distance="1%">
+           on-infinite="loadMore('contest')"
+           distance="1%">
         </ion-infinite-scroll>
-      </ion-content>
+      </ion-content></ion-view>
+    </ion-tab>
+    <ion-tab title="Top" icon-on="ion-trophy" icon-off="ion-trophy">
+      <ion-view><ion-content>
+        <ion-refresher
+           pulling-text="Pull to refresh..."
+           on-refresh="doRefresh()">
+        </ion-refresher>
+        <ion-list>
+          <kaplayer-program-list-item ng-repeat="program in categories.top.programs" program="program">
+        </ion-list>
+        <ion-infinite-scroll
+           on-infinite="loadMore('top')"
+           distance="1%">
+        </ion-infinite-scroll>
+      </ion-content></ion-view>
     </ion-tab>
   </ion-tabs>
 </ion-view>
