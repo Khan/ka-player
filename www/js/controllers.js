@@ -150,6 +150,8 @@ angular.module("starter.controllers", [])
 .controller('AddCtrl', function($scope, $http, programFactory, programsService) {
     // the program that has been found from the search field
     $scope.program = null;
+    // whether the program is currently being loaded
+    $scope.loading = false;
 
     /**
      * Called whenever the inputted program URL is updated.
@@ -158,7 +160,14 @@ angular.module("starter.controllers", [])
     $scope.onUpdateURL = function(programURL) {
         // try loading a program from the given URL
         var programId = extractIdFromUrl(programURL);
+        $scope.loading = true;
         programFactory.createProgramFromId(programId)
+            .finally(function(){
+                // turn off the loading flag now (instead of after setting
+                // the program value) since the template checks first if it's
+                // still loading
+                $scope.loading = false;
+            })
             .then(function(program){
                 $scope.program = program;
             })
