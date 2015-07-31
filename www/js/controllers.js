@@ -56,28 +56,36 @@ angular.module("starter.controllers", [])
         "top": 5
     };
 
-    // generate $scope.categories.hot, $scope.categories.recent, etc.
-    // each one will be the key, with the value being the list of programs
-    $scope.categories = {};
-    _.each(categoryMap, function(sortKey, categoryName) {
-        $http.jsonp("https://www.khanacademy.org/api/internal/scratchpads/top?" +
-                "casing=camel&topic_id=xffde7c31&sort=" + sortKey +
-                "&limit=20&page=0&callback=JSON_CALLBACK")
-            .success(function(data, status, headers, config) {
-                // data.scratchpads contains a list of programs, which we must
-                // convert to our format
-                var programs = _.map(data.scratchpads, function(scratchpad, key) {
-                    return programFactory.createProgram({
-                        id: extractIdFromUrl(scratchpad.url),
-                        title: scratchpad.title,
-                        voteCount: scratchpad.sumVotesIncremented,
-                        spinoffCount: scratchpad.spinoffCount,
-                    });
-                });
+    $scope.doRefresh = function() {
+      // generate $scope.categories.hot, $scope.categories.recent, etc.
+      // each one will be the key, with the value being the list of programs
+      $scope.categories = {};
+      _.each(categoryMap, function(sortKey, categoryName) {
+          $http.jsonp("https://www.khanacademy.org/api/internal/scratchpads/top?" +
+                  "casing=camel&topic_id=xffde7c31&sort=" + sortKey +
+                  "&limit=20&page=0&callback=JSON_CALLBACK")
+              .success(function(data, status, headers, config) {
+                  // data.scratchpads contains a list of programs, which we must
+                  // convert to our format
+                  var programs = _.map(data.scratchpads, function(scratchpad, key) {
+                      return programFactory.createProgram({
+                          id: extractIdFromUrl(scratchpad.url),
+                          title: scratchpad.title,
+                          voteCount: scratchpad.sumVotesIncremented,
+                          spinoffCount: scratchpad.spinoffCount,
+                      });
+                  });
 
-                $scope.categories[categoryName] = programs;
-            });
-    });
+                  $scope.categories[categoryName] = programs;
+              })
+              .finally(function() {
+                // stops the ion-refresher from spinning
+                $scope.$broadcast('scroll.refreshComplete');
+              });
+      });
+    }
+    // we call our refresh once so it loads on the original call
+    $scope.doRefresh();
 })
 
 .controller('FavoritesCtrl', function($scope, programsService) {
@@ -152,6 +160,7 @@ angular.module("starter.controllers", [])
     debugger
     $scope.markFavorite = function() {
         // TODO(chelsea): This doesn't work!
+        debugger
         $scope.program.favorite = !$scope.program.favorite;
     }
 })
@@ -256,6 +265,7 @@ angular.module("starter.controllers", [])
             return program;
           })
           .catch(function(response){
+            debugger
             console.log("getProgramById failed: " + response.data)
             return null
           });
