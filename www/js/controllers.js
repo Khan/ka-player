@@ -122,7 +122,7 @@ angular.module("starter.controllers", [
      * Called whenever the inputted program URL is updated.
      * Attempts to grab information
      */
-    $scope.onUpdateURL = function(programURL) {
+    var onUpdateURL = function(programURL) {
         // try loading a program from the given URL
         var programId = extractIdFromUrl(programURL);
         $scope.loading = true;
@@ -141,6 +141,7 @@ angular.module("starter.controllers", [
                 $scope.program = null;
             });
     };
+    $scope.onUpdateURL = _.throttle(onUpdateURL, 1000);
 
     /**
      * Adds the current program to the data store and favorites it.
