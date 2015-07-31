@@ -53,7 +53,7 @@ angular.module("starter.controllers", [])
         "hot": 3,
         "recent": 2,
         "contest": 4,
-        "upvote": 5
+        "top": 5
     };
 
     // generate $scope.categories.hot, $scope.categories.recent, etc.
@@ -104,7 +104,7 @@ angular.module("starter.controllers", [])
     };
 })
 
-.controller('PlayerCtrl', function($scope, $stateParams, $sce) {
+.controller('PlayerCtrl', function($scope, $stateParams, $sce, programFactory) {
     var programId = $stateParams.programId;
     $scope.programId = programId;
 
@@ -148,6 +148,10 @@ angular.module("starter.controllers", [])
         programId + "/embedded?embed=yes&article=yes&editor=no&buttons=no" +
         "&author=no&autoStart=yes&width=" + iframeSize +
         "&height=" + iframeSize);
+
+    programFactory.createProgramFromId(programId).then(function(program) {
+        $scope.program = program;
+    });
 })
 
 /**
