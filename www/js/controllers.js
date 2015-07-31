@@ -109,7 +109,7 @@ angular.module("starter.controllers", [])
  * Handles playing a particular program.
  */
 .controller('PlayerCtrl', function($scope, $stateParams, $sce, programsService) {
-    var programId = $stateParams.programId;
+    var programId = parseInt($stateParams.programId);
     // the id of the program to be rendered here
     $scope.programId = programId;
 
@@ -202,7 +202,7 @@ angular.module("starter.controllers", [])
          * often just enter the ID of a program, but we need more metadata.
          * Therefore, this makes an API call to retrieve more information
          * about the program.
-         * @param  {String} id a numeric identifier of the program.
+         * @param  {int} id a numeric identifier of the program.
          * @return {Promise}    returns a program object when it resolves.
          */
         createProgramFromId: function(id) {
@@ -242,15 +242,33 @@ angular.module("starter.controllers", [])
  */
 .factory('programsService', function($http, programFactory, $q) {
 
-  var programs = {};
+  var programs = [];
 
   var service = {
       /**
        * Returns all programs that have been stored.
-       * @return {Program hash} An object mapping program id => program.
+       * @return {Program[]}
        */
       getAllPrograms: function() {
           return programs;
+      },
+
+      /**
+       * Returns the program with the given ID. The program must, of course,
+       * exist within the programs store. Use loadProgram() to add a program
+       * to the list.
+       */
+      getProgramById: function(programId) {
+          return _.find(programs, function(program){
+              return program.id === programId;
+          });
+      },
+
+      /**
+       * Adds the given program to the data store.
+       */
+      _insertProgram: function(program){
+          programs.push(program);
       },
 
       /**
@@ -267,30 +285,23 @@ angular.module("starter.controllers", [])
        */
       addProgram: function(programId) {
           var deferred = $q.defer();
+
           // don't fetch if the program exists in the store
-          if (programs.hasOwnProperty(programId)) {
+          var storedProgram = service.getProgramById(programId);
+          if (storedProgram) {
               // resolve immediately to the program
-              deferred.resolve(programs[programId]);
+              deferred.resolve(storedProgram);
           } else {
               // fetch metadata
               programFactory.createProgramFromId(programId)
                   .then(function(newProgram) {
-                      programs[programId] = newProgram;
+                      service._insertProgram(newProgram);
                       deferred.resolve(newProgram);
                   });
           }
 
           return deferred.promise;
       },
-
-      /**
-       * Returns the program with the given ID. The program must, of course,
-       * exist within the programs list. Use loadProgram() to add a program
-       * to the list.
-       */
-      getProgram: function(programId){
-          return programs[programId];
-      }
   };
 
   // add in a bunch of default programs
@@ -307,6 +318,9 @@ angular.module("starter.controllers", [])
         _.each(programs, function(program){
             program.favorite = true;
         });
+    })
+    .then(function(){
+        console.log("X", service.getAllPrograms());
     });
   //
   // // for testing
