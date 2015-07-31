@@ -153,9 +153,8 @@ angular.module("starter.controllers", [])
     });
 
     $scope.markFavorite = function() {
-        alert("Clicked the star. (TODO: mark as favorite as a consequence)");
         // TODO(chelsea): This doesn't work!
-        $scope.program.favorite = true;
+        $scope.program.favorite = !$scope.program.favorite;
     }
 })
 

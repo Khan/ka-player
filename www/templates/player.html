@@ -1,7 +1,7 @@
 <ion-view view-title="Player">
     <ion-nav-buttons side="right">
-        <button class="button button-energized button-clear" ng-click="markFavorite()">
-          <i class="icon ion-ios-star"></i>
+        <button class="button button-positive button-clear" ng-click="markFavorite()">
+          <i ng-class="{true: 'icon ion-ios-star', false: 'icon ion-ios-star-outline'}[program.favorite]"></i>
         </button>
     </ion-nav-buttons>
     <ion-content scroll="false">
