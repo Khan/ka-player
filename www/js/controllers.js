@@ -225,9 +225,7 @@ angular.module("starter.controllers", [
         "&author=no&autoStart=yes&width=" + $scope.iframeSize +
         "&height=" + $scope.iframeSize);
 
-    $scope.program = programsService.getProgramById(programId);
     $scope.markFavorite = function() {
-        // TODO(chelsea): This doesn't work!
         $scope.program.favorite = !$scope.program.favorite;
     }
 })
@@ -469,7 +467,7 @@ angular.module("starter.controllers", [
               });
 
               // save updates b/c programs have been marked as favorites
-              // service._updateLocalStorage();
+              service._updateLocalStorage();
           });
   }
 
@@ -504,7 +502,8 @@ var extractIdFromUrl = function(url) {
     // https://www.khanacademy.org/computer-programming/[slug]/[id]
     // and we only care about the id
     var urlChunks = url.split("/");
-    return urlChunks.slice(-1)[0];
+    var stringId = urlChunks.slice(-1)[0];
+    return parseInt(stringId);
 }
 
 var idToImageUrl = function(id) {
