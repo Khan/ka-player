@@ -1,29 +1,33 @@
 <ion-view view-title="Add a Program">
-  <ion-content>
-    <div class="item">Enter the URL of a program you'd like to play:</div>
-    <label class="item item-input">
-      <input type="text" placeholder="Program URL" ng-model="programURL" ng-change="onUpdateURL(programURL)">
-    </label>
+    <ion-content>
+        <div class="item">Enter the URL of a program you'd like to play:</div>
+        <label class="item item-input">
+            <input type="text" placeholder="Program URL" ng-model="programURL" ng-change="onUpdateURL(programURL)">
+        </label>
 
-    <br>
+        <br>
 
-    <!-- TODO(neel): extract styles out of inline -->
+        <!-- TODO(neel): show an error message if there's a program url but no program
+            -- that indicates they have a malformed URL -->
 
-    <div class="list card" style="max-width: 200px; margin: auto;" ng-if="programId">
+        <div class="list card" style="max-width: 200px; margin: auto;" ng-if="programURL && program">
 
-      <!-- <div class="item">
-        <h2></h2>
-      </div> -->
+            <div class="item">
+                <h2>{{program.title}}</h2>
+            </div>
 
-      <div class="item item-image">
-        <img ng-src="{{thumbnailUrl}}" alt="That isn't a valid program URL! :(">
-      </div>
+            <div class="item item-image">
+                <img ng-src="{{program.imageURL}}">
+            </div>
 
-      <a class="item item-icon-left assertive" href="#/app/play/{{programId}}">
-        <i class="icon ion-play"></i>
-        Play
-      </a>
+            <a class="item item-icon-left assertive" href="#/app/play/{{program.id}}">
+                <i class="icon ion-play"></i> Play
+            </a>
 
-    </div>
-  </ion-content>
+            <a class="item item-icon-left positive" href="#/app/favorites" ng-click="addFavorite()">
+                <i class="icon ion-ios-star"></i> Add to favorites
+            </a>
+
+        </div>
+    </ion-content>
 </ion-view>

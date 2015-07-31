@@ -147,16 +147,33 @@ angular.module("starter.controllers", [])
   $scope.programs = programsService.getAllPrograms();
 })
 
-.controller('AddCtrl', function($scope, $http) {
+.controller('AddCtrl', function($scope, $http, programFactory, programsService) {
+    // the program that has been found from the search field
+    $scope.program = null;
+
     /**
      * Called whenever the inputted program URL is updated.
-     * Updates the thumbnail and URL of the program whose URL was inputted.
-     * TODO(neel): grab more related metadata.
+     * Attempts to grab information
      */
     $scope.onUpdateURL = function(programURL) {
+        // try loading a program from the given URL
         var programId = extractIdFromUrl(programURL);
-        $scope.programId = programId;
-        $scope.thumbnailUrl = idToImageUrl(programId);
+        programFactory.createProgramFromId(programId)
+            .then(function(program){
+                $scope.program = program;
+            })
+            .catch(function(){
+                // the ID didn't match a program on khan academy
+                $scope.program = null;
+            });
+    };
+
+    /**
+     * Adds the current program to the data store and favorites it.
+     */
+    $scope.addFavorite = function(){
+        $scope.program.favorite = true;
+        programsService.insertProgram($scope.program);
     };
 })
 
@@ -170,7 +187,7 @@ angular.module("starter.controllers", [])
 
     // grab the program itself. we'll need to add it to the programsService
     // data store.
-    programsService.addProgram(programId).then(function(program){
+    programsService.addProgramById(programId).then(function(program){
         $scope.program = program;
     });
 
@@ -257,6 +274,8 @@ angular.module("starter.controllers", [])
          * about the program.
          * @param  {int} id a numeric identifier of the program.
          * @return {Promise}    returns a program object when it resolves.
+         *                      But if the API returned an error, the promise
+         *                      rejects.
          */
         createProgramFromId: function(id) {
             // $http doesn't return a proper promise so we need to make
@@ -280,6 +299,9 @@ angular.module("starter.controllers", [])
                     // so pass it to the other handler
                     var finishedProgram = factory.createProgram(metadata);
                     deferred.resolve(finishedProgram);
+                })
+                .error(function(data, status, headers, config){
+                    deferred.reject();
                 });
 
             return deferred.promise;
@@ -354,7 +376,7 @@ angular.module("starter.controllers", [])
       /**
        * Adds the given program to the data store.
        */
-      _insertProgram: function(program){
+      insertProgram: function(program){
           programs.push(program);
       },
 
@@ -370,7 +392,7 @@ angular.module("starter.controllers", [])
        * @return {Promise}    Resolves once the program has been added. Returns
        *                      the program with the given ID.
        */
-      addProgram: function(programId) {
+      addProgramById: function(programId) {
           var deferred = $q.defer();
 
           // don't fetch if the program exists in the store
@@ -382,7 +404,7 @@ angular.module("starter.controllers", [])
               // fetch metadata
               programFactory.createProgramFromId(programId)
                   .then(function(newProgram) {
-                      service._insertProgram(newProgram);
+                      service.insertProgram(newProgram);
                       deferred.resolve(newProgram);
                   });
           }
@@ -398,7 +420,7 @@ angular.module("starter.controllers", [])
       5406513695948800,
       6539939794780160
   ];
-  var programPromises = _.map(defaultIds, service.addProgram);
+  var programPromises = _.map(defaultIds, service.addProgramById);
   $q.all(programPromises)
     .then(function(programs){
         // make these all favorites
@@ -411,7 +433,7 @@ angular.module("starter.controllers", [])
   // _.delay(function(){
   //     programFactory.createProgramFromId(5536800924893184).then(function(program){
   //         console.log("Adding", program.title);
-  //         service.addProgram(program);
+  //         service.addProgramById(program);
   //         program.favorite = true;
   //     });
   // }, 5000);
