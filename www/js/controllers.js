@@ -56,14 +56,15 @@ angular.module("starter.controllers", [])
         "top": 5
     };
 
+    $scope.categories = {};
+
     $scope.doRefresh = function() {
       // generate $scope.categories.hot, $scope.categories.recent, etc.
       // each one will be the key, with the value being the list of programs
-      $scope.categories = {};
       _.each(categoryMap, function(sortKey, categoryName) {
           $http.jsonp("https://www.khanacademy.org/api/internal/scratchpads/top?" +
                   "casing=camel&topic_id=xffde7c31&sort=" + sortKey +
-                  "&limit=20&page=0&callback=JSON_CALLBACK")
+                  "&limit=20&callback=JSON_CALLBACK")
               .success(function(data, status, headers, config) {
                   // data.scratchpads contains a list of programs, which we must
                   // convert to our format
@@ -75,8 +76,10 @@ angular.module("starter.controllers", [])
                           spinoffCount: scratchpad.spinoffCount,
                       });
                   });
-
-                  $scope.categories[categoryName] = programs;
+                  $scope.categories[categoryName] = {
+                      'programs': programs,
+                      'cursor': data.cursor,   // This allows us to fetch more
+                  };
               })
               .finally(function() {
                 // stops the ion-refresher from spinning
@@ -86,6 +89,34 @@ angular.module("starter.controllers", [])
     }
     // we call our refresh once so it loads on the original call
     $scope.doRefresh();
+
+    $scope.loadMore = function(categoryName) {
+      // An infinite scroll is detected before we load any content,
+      // so, don't do that if no content has loaded
+      if (! (categoryName in $scope.categories)) {
+        $scope.$broadcast('scroll.infiniteScrollComplete');
+        return;
+      }
+      var sortKey = categoryMap[categoryName];
+      var categoriesObject = $scope.categories[categoryName];
+      var cursor = categoriesObject.cursor;
+      $http.jsonp("https://www.khanacademy.org/api/internal/scratchpads/top?" +
+                "casing=camel&topic_id=xffde7c31&sort=" + sortKey +
+                "&limit=20&callback=JSON_CALLBACK&cursor=" + cursor)
+        .success(function(data, status, headers, config) {
+          var programs = _.map(data.scratchpads, function(scratchpad, key) {
+            return programFactory.createProgram({
+              id: extractIdFromUrl(scratchpad.url),
+              title: scratchpad.title,
+              voteCount: scratchpad.sumVotesIncremented,
+              spinoffCount: scratchpad.spinoffCount,
+            });
+          });
+          categoriesObject.programs = categoriesObject.programs.concat(programs);
+          categoriesObject.cursor = data.cursor;
+          $scope.$broadcast('scroll.infiniteScrollComplete');
+        });
+  };
 })
 
 .controller('SearchCtrl', function($scope, $http, programFactory, programsService, $ionicLoading) {
