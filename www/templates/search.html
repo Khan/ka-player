@@ -4,14 +4,9 @@
         <ion-search placeholder="Search a user" filter="search"></ion-search>
     </div>
     <ion-list ng-if="search.value">
-      <ion-item class="item item-thumbnail-left"
+        <kaplayer-program-list-item
             ng-repeat="program in programs | filter:search.value | limitTo:20"
-            href="#/app/play/{{program.id}}">
-        <img ng-src="{{program.imageURL}}" style="">
-        <h2>{{program.title}}</h2>
-        <h4>{{program.voteCount}} Votes &middot; {{program.spinoffCount}} Spin-offs</h4>
-        <p>{{program.description}}</p>
-      </ion-item>
+            program="program" />
     </ion-list>
   </ion-content>
 </ion-view>
