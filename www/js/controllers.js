@@ -110,10 +110,6 @@ angular.module("starter.controllers", [])
       // hide the ionic loading page
       $ionicLoading.hide();
     });
-
-  $scope.clearSearch = function() {
-    $scope.search.value = '';
-  }
 })
 
 .controller('FavoritesCtrl', function($scope, programsService) {
@@ -283,18 +279,6 @@ angular.module("starter.controllers", [])
 
           if (attrs.class)
               element.addClass(attrs.class);
-
-          if (attrs.source) {
-              scope.$watch('search.value', function (newValue, oldValue) {
-                  if (newValue.length > attrs.minLength) {
-                      scope.getData({str: newValue}).then(function (results) {
-                          scope.model = results;
-                      });
-                  } else {
-                      scope.model = [];
-                  }
-              });
-          }
 
           scope.clearSearch = function() {
               scope.search.value = '';

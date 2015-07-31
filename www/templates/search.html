@@ -3,7 +3,7 @@
     <div class="bar bar-header item-input-inset">
         <ion-search placeholder="Search a user" filter="search"></ion-search>
     </div>
-    <ion-list>
+    <ion-list ng-if="search.value">
       <ion-item class="item item-thumbnail-left"
             ng-repeat="program in programs | filter:search.value | limitTo:20"
             href="#/app/play/{{program.id}}">
