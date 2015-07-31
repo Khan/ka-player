@@ -1,5 +1,7 @@
 angular.module("starter.controllers", [])
-
+.config(function ($sceDelegateProvider) {
+    $sceDelegateProvider.resourceUrlWhitelist(['self', '*khanacademy.org*', 'http://www.khanacademy.org/', 'https://www.khanacademy.org/', 'http://khanacademy.org/', 'https://khanacademy.org/']);
+})
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
 
   // With the new view caching in Ionic, Controllers are only called
