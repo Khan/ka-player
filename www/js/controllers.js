@@ -165,37 +165,51 @@ angular.module("starter.controllers", [
         $scope.program = program;
     });
 
-    // make the iframe at most as wide as the window
-    var windowWidth = angular.element(window).width();
-    var windowHeight = angular.element(window).height();
-    // KA programs get 400 pixels to work with, so they need at least that
-    // (any less and they get truncated)
-    var MIN_IFRAME_SIZE = 400;
+    /**
+    * Resizes the program to fit the current screen size.
+    */
+    function fitProgramToScreen(){
+        // make the iframe at most as wide as the window
+        var windowWidth = angular.element(window).width();
+        var windowHeight = angular.element(window).height();
+        // KA programs get 400 pixels to work with, so they need at least that
+        // (any less and they get truncated)
+        var MIN_IFRAME_SIZE = 400;
 
-    var scaleFactor = 1;
-    var iframeSize = MIN_IFRAME_SIZE;
+        var scaleFactor = 1;
+        var iframeSize = MIN_IFRAME_SIZE;
 
-    // if the window is larger than the program, keep it the same size:
-    // if we scale it up then it gets pixelated, if we give the iframe more
-    // room the program may break since it may rely on being 400x400 -- so
-    // the program can grow no larger than 400x400
-    // if (windowWidth > MIN_IFRAME_SIZE && windowHeight > MIN_IFRAME_SIZE) {
-    //     iframeSize = Math.min(windowWidth, windowHeight);
-    // }
+        // if the window is larger than the program, keep it the same size:
+        // if we scale it up then it gets pixelated, if we give the iframe more
+        // room the program may break since it may rely on being 400x400 -- so
+        // the program can grow no larger than 400x400
+        // if (windowWidth > MIN_IFRAME_SIZE && windowHeight > MIN_IFRAME_SIZE) {
+        //     iframeSize = Math.min(windowWidth, windowHeight);
+        // }
 
-    // if the window is too small to fit the program, you can't reduce its
-    // width or height, as that'd just truncate the program. instead, scale it
-    // down to simulate it being shrunk.
-    // keep width & height the same to maintain square aspect ratio.
-    if (windowWidth < MIN_IFRAME_SIZE || windowHeight < MIN_IFRAME_SIZE) {
-        scaleFactor = Math.min(windowWidth, windowHeight) / MIN_IFRAME_SIZE;
+        // if the window is too small to fit the program, you can't reduce its
+        // width or height, as that'd just truncate the program. instead, scale
+        // it down to simulate it being shrunk.
+        // keep width & height the same to maintain square aspect ratio.
+        if (windowWidth < MIN_IFRAME_SIZE || windowHeight < MIN_IFRAME_SIZE) {
+            scaleFactor = Math.min(windowWidth, windowHeight)
+                / MIN_IFRAME_SIZE;
+        }
+
+        $scope.iframeSize = iframeSize;
+        $scope.scaleFactor = scaleFactor;
+
+        console.log("Rendering program at size " + iframeSize +
+            " and scale " + scaleFactor);
     }
 
-    $scope.iframeSize = iframeSize;
-    $scope.scaleFactor = scaleFactor;
+    // make the program fit initially, of course
+    fitProgramToScreen();
 
-    console.log("Rendering program at size " + iframeSize +
-        " and scale " + scaleFactor);
+    // re-fit the program whenever the window is resized (e.g. when the phone
+    // is turned from landscape to portrait)
+    angular.element(window).off('resize').on('resize',
+        _.throttle(fitProgramToScreen, 1000));
 
     // angular usually won't let us interpolate a variable in an iframe url.
     // we need to manually specify that it's trusted.
@@ -203,8 +217,8 @@ angular.module("starter.controllers", [
     $scope.url = $sce.trustAsResourceUrl(
         "https://www.khanacademy.org/computer-programming/ka-player/" +
         programId + "/embedded?embed=yes&article=yes&editor=no&buttons=no" +
-        "&author=no&autoStart=yes&width=" + iframeSize +
-        "&height=" + iframeSize);
+        "&author=no&autoStart=yes&width=" + $scope.iframeSize +
+        "&height=" + $scope.iframeSize);
 
     $scope.program = programsService.getProgramById(programId);
     $scope.markFavorite = function() {
