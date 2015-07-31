@@ -89,12 +89,7 @@ angular.module("starter.controllers", [])
 })
 
 .controller('FavoritesCtrl', function($scope, programsService) {
-  $scope.programs = programsService.getPrograms();
-  $scope.favorites = programsService.getPrograms();
-
-  $scope.$watch('programs', function(oldValue, newValue){
-      $scope.favorites = newValue;
-  });
+  $scope.programs = programsService.getAllPrograms();
 })
 
 .controller('AddCtrl', function($scope, $http) {
@@ -110,9 +105,19 @@ angular.module("starter.controllers", [])
     };
 })
 
+/**
+ * Handles playing a particular program.
+ */
 .controller('PlayerCtrl', function($scope, $stateParams, $sce, programsService) {
     var programId = $stateParams.programId;
+    // the id of the program to be rendered here
     $scope.programId = programId;
+
+    // grab the program itself. we'll need to add it to the programsService
+    // data store.
+    programsService.addProgram(programId).then(function(program){
+        $scope.program = program;
+    });
 
     // make the iframe at most as wide as the window
     var windowWidth = angular.element(window).width();
@@ -155,7 +160,6 @@ angular.module("starter.controllers", [])
         "&author=no&autoStart=yes&width=" + iframeSize +
         "&height=" + iframeSize);
 
-    $scope.program = programsService.getProgramById(programId);
     debugger
     $scope.markFavorite = function() {
         // TODO(chelsea): This doesn't work!
@@ -234,42 +238,59 @@ angular.module("starter.controllers", [])
 })
 
 /**
- * Contains all your programs and methods to manage them.
- * Only add a program here if you're intent on playing it.
+ * A data store of programs the user has played or has favorited.
  */
-.factory('programsService', function($http, programFactory) {
+.factory('programsService', function($http, programFactory, $q) {
 
   var programs = {};
 
   var service = {
       /**
-       * Adds the given program (from programFactory) to the list.
+       * Returns all programs that have been stored.
+       * @return {Program hash} An object mapping program id => program.
        */
-      addProgram: function(program) {
-          programs[program.id] = program;
+      getAllPrograms: function() {
+          return programs;
       },
 
-      getPrograms: function() {
-          return programs
+      /**
+       * Fetches information about a program with the given ID, and stores
+       * metadata about it in the programs list. Use this to add a new
+       * program to the program store.
+       *
+       * If the program already exists in the program store, it will not
+       * be re-fetched, and the cached version will be given back.
+       *
+       * @param  {int} programId    The ID of a program to add to the store.
+       * @return {Promise}    Resolves once the program has been added. Returns
+       *                      the program with the given ID.
+       */
+      addProgram: function(programId) {
+          var deferred = $q.defer();
+          // don't fetch if the program exists in the store
+          if (programs.hasOwnProperty(programId)) {
+              // resolve immediately to the program
+              deferred.resolve(programs[programId]);
+          } else {
+              // fetch metadata
+              programFactory.createProgramFromId(programId)
+                  .then(function(newProgram) {
+                      programs[programId] = newProgram;
+                      deferred.resolve(newProgram);
+                  });
+          }
+
+          return deferred.promise;
       },
 
-      getProgramById: function(id) {
-        if (id in service.getPrograms()) {
-          debugger
-          return service.getPrograms()[id];
-        } else {
-          programFactory.createProgramFromId(id)
-          .then(function(program){
-            service.addProgram(program);
-            return program;
-          })
-          .catch(function(response){
-            debugger
-            console.log("getProgramById failed: " + response.data)
-            return null
-          });
-        }
-      },
+      /**
+       * Returns the program with the given ID. The program must, of course,
+       * exist within the programs list. Use loadProgram() to add a program
+       * to the list.
+       */
+      getProgram: function(programId){
+          return programs[programId];
+      }
   };
 
   // add in a bunch of default programs
@@ -279,21 +300,23 @@ angular.module("starter.controllers", [])
       5406513695948800,
       6539939794780160
   ];
-  _.each(defaultIds, function(id){
-      programFactory.createProgramFromId(id).then(function(program){
-          service.addProgram(program);
-          program.favorite = true;
-      });
-  });
-
-  // for testing
-  _.delay(function(){
-      programFactory.createProgramFromId(5536800924893184).then(function(program){
-          console.log("Adding", program.title);
-          service.addProgram(program);
-          program.favorite = true;
-      });
-  }, 5000);
+  var programPromises = _.map(defaultIds, service.addProgram);
+  $q.all(programPromises)
+    .then(function(programs){
+        // make these all favorites
+        _.each(programs, function(program){
+            program.favorite = true;
+        });
+    });
+  //
+  // // for testing
+  // _.delay(function(){
+  //     programFactory.createProgramFromId(5536800924893184).then(function(program){
+  //         console.log("Adding", program.title);
+  //         service.addProgram(program);
+  //         program.favorite = true;
+  //     });
+  // }, 5000);
 
   return service;
 })
