@@ -436,9 +436,14 @@ angular.module("starter.controllers", [
 
       /**
        * Adds the given program to the data store and updates localStorage.
+       * If any program with this ID already exists, overwrites it.
        */
-      insertProgram: function(program) {
-          $rootScope.programs.push(program);
+      insertProgram: function(newProgram) {
+          // remove any program with this id
+          $rootScope.programs = _.reject($rootScope.programs, function(program) {
+              return program.id === newProgram.id;
+          });
+          $rootScope.programs.push(newProgram);
           service._updateLocalStorage();
       },
   };
