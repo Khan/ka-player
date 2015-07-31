@@ -325,6 +325,7 @@ angular.module("starter.controllers", [
   var LOCALSTORAGE_KEY = 'programs';
 
   var service = {
+      // manipulate the data store on localStorage
       /**
        * Saves the current list of programs to localStorage.
        */
@@ -337,7 +338,7 @@ angular.module("starter.controllers", [
       * @return {boolean} true if there were programs stored in LocalStorage,
       *                   false otherwise.
       */
-      loadFromLocalStorage: function() {
+      _loadFromLocalStorage: function() {
           var storedPrograms = localStorageService.get(LOCALSTORAGE_KEY);
           if (storedPrograms && !_.isEmpty(storedPrograms)) {
               $rootScope.programs = storedPrograms;
@@ -347,6 +348,19 @@ angular.module("starter.controllers", [
           }
       },
 
+      /**
+       * Cleans out the data store by removing all programs that are not
+       * favorites. This is helpful when restarting the app, as we only
+       * show the user their favorite programs, so we non-favorite ones will
+       * just pile up and eat up space without providing any use.
+       */
+      _removeNonFavorites: function() {
+          $rootScope.programs = _.filter($rootScope.programs, function(program){
+              return program.favorite;
+          });
+      },
+
+      // user-facing
       /**
        * Returns all programs that have been stored.
        * @return {Program[]}
@@ -411,7 +425,7 @@ angular.module("starter.controllers", [
   };
 
   // load programs from localStorage if they exist
-  var wasStored = service.loadFromLocalStorage();
+  var wasStored = service._loadFromLocalStorage();
 
   // if there's nothing stored, load a bunch of default programs
   if (!wasStored) {
@@ -441,6 +455,11 @@ angular.module("starter.controllers", [
   $rootScope.$watch('programs', function(){
       service._updateLocalStorage();
   }, true)
+
+  // clean out any non-favorited programs to save space. only do this on
+  // startup, as we know that you're not currently playing any programs
+  // at this state.
+  service._removeNonFavorites();
 
   return service;
 })
