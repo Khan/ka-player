@@ -72,7 +72,6 @@ angular.module("starter.controllers", [])
                         title: scratchpad.title,
                         voteCount: scratchpad.sumVotesIncremented,
                         spinoffCount: scratchpad.spinoffCount,
-                        image: idToImageUrl(extractIdFromUrl(scratchpad.url)),
                     });
                 });
 
@@ -206,7 +205,7 @@ angular.module("starter.controllers", [])
                         description: data.descriptionHtml,
                         voteCount: data.sumVotesIncremented,
                         spinoffCount: data.spinoffCount,
-                        image: idToImageUrl(id),
+                        imageURL: idToImageUrl(id),
                     };
 
                     // now we need to do some further processing of the metadata,
