@@ -6,7 +6,9 @@
           pulling-text="Pull to refresh..."
           on-refresh="doRefresh()">
         </ion-refresher>
-        <kaplayer-program-list info="categories.hot" />
+        <ion-list>
+            <kaplayer-program-list-item ng-repeat="program in categories.hot" program="program">
+        </ion-list>
       </ion-content>
     </ion-tab>
     <ion-tab title="Recent" icon-on="ion-clock" icon-off="ion-clock">
@@ -15,7 +17,9 @@
           pulling-text="Pull to refresh..."
           on-refresh="doRefresh()">
         </ion-refresher>
-        <kaplayer-program-list info="categories.recent" />
+        <ion-list>
+            <kaplayer-program-list-item ng-repeat="program in categories.recent" program="program">
+        </ion-list>
       </ion-content>
     </ion-tab>
     <ion-tab title="Contests" icon-on="ion-ribbon-b" icon-off="ion-ribbon-b">
@@ -24,16 +28,20 @@
           pulling-text="Pull to refresh..."
           on-refresh="doRefresh()">
         </ion-refresher>
-        <kaplayer-program-list info="categories.contest" />
+        <ion-list>
+            <kaplayer-program-list-item ng-repeat="program in categories.contest" program="program">
+        </ion-list>
       </ion-content>
     </ion-tab>
-    <ion-tab title="Top" icon-on="ion-planet" icon-off="ion-planet">
+    <ion-tab title="Top" icon-on="ion-trophy" icon-off="ion-trophy">
       <ion-content>
         <ion-refresher
           pulling-text="Pull to refresh..."
           on-refresh="doRefresh()">
         </ion-refresher>
-        <kaplayer-program-list info="categories.top" />
+        <ion-list>
+            <kaplayer-program-list-item ng-repeat="program in categories.top" program="program">
+        </ion-list>
       </ion-content>
     </ion-tab>
   </ion-tabs>
