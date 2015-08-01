@@ -1,9 +1,6 @@
-angular.module("starter.controllers", [
+angular.module("ka-player.controllers", [
     'LocalStorageModule'
 ])
-.config(function ($sceDelegateProvider) {
-    $sceDelegateProvider.resourceUrlWhitelist(['self', '*khanacademy.org*', 'http://www.khanacademy.org/', 'https://www.khanacademy.org/', 'http://khanacademy.org/', 'https://khanacademy.org/']);
-})
 .controller('AppCtrl', function($scope) {
 
 })
