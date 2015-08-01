@@ -8,6 +8,7 @@ Built by [Neel Mehta](https://github.com/hathix), [Chelsea Voss](https://github.
 
 ```sh
 $ npm install
+$ cordova plugin add org.apache.cordova.inappbrowser
 $ ionic serve
 ```
 
