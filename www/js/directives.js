@@ -1,6 +1,4 @@
-angular.module("ka-player.directives", [
-    'LocalStorageModule'
-])
+angular.module("ka-player.directives", [])
 
 /**
  * Adding an ion search directive taken from http://codepen.io/gastonbesada/pen/eqvJK

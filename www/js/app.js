@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 angular.module('ka-player',
-    ['ionic', 'ka-player.controllers', 'ka-player.directives'])
+    ['ionic', 'ka-player.controllers', 'ka-player.directives', 'ka-player.services'])
 
 .run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
