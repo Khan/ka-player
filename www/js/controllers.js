@@ -85,12 +85,14 @@ angular.module("ka-player.controllers", [])
 
 .controller('SearchCtrl', function($scope, $http, programFactory, programsService, $ionicLoading) {
 
+    $scope.programs = [];
+
   $http.jsonp("https://www.khanacademy.org/api/internal/scratchpads/top?" +
                 "casing=camel&topic_id=xffde7c31&sort=5&limit=500&page=0&callback=JSON_CALLBACK")
     .success(function(data, status, headers, config) {
         // data.scratchpads contains a list of programs, which we must
         // convert to our format
-        var programs = _.map(data.scratchpads, function(scratchpad, key) {
+        $scope.programs = _.map(data.scratchpads, function(scratchpad, key) {
             return programFactory.createProgram({
                 id: extractIdFromUrl(scratchpad.url),
                 title: scratchpad.title,
@@ -98,12 +100,6 @@ angular.module("ka-player.controllers", [])
                 spinoffCount: scratchpad.spinoffCount,
             });
         });
-
-        $scope.programs = programs;
-    })
-    .finally(function() {
-      // hide the ionic loading page
-      $ionicLoading.hide();
     });
 })
 
