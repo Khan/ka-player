@@ -27,6 +27,8 @@ angular.module("ka-player.services", [
             program.favorite = false;
             // thumbnail URL
             program.imageURL = idToImageUrl(program.id);
+            // the last time the program was played
+            program.lastPlayed = Date.now();
 
             return program;
         },
@@ -223,9 +225,6 @@ angular.module("ka-player.services", [
               _.each(programs, function(program) {
                   program.favorite = true;
               });
-
-              // save updates b/c programs have been marked as favorites
-              service._updateLocalStorage();
           });
   }
 

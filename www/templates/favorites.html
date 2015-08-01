@@ -2,7 +2,9 @@
     <ion-content>
         <ion-list>
             <kaplayer-program-list-item
-                ng-repeat="program in programs | filter:{favorite:true}"
+                ng-repeat="program in programs
+                    | filter:{favorite:true}
+                    | orderBy: '-lastPlayed'"
                 program="program" />
         </ion-list>
     </ion-content>

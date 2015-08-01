@@ -133,6 +133,7 @@ angular.module("ka-player.controllers", [])
                 $scope.loading = false;
             })
             .then(function(program){
+                // program successfully loaded
                 $scope.program = program;
             })
             .catch(function(){
@@ -166,6 +167,7 @@ angular.module("ka-player.controllers", [])
     // data store.
     programsService.addProgramById(programId).then(function(program){
         $scope.program = program;
+        $scope.program.lastPlayed = Date.now();
     });
 
     /**
