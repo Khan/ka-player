@@ -1,6 +1,9 @@
 <ion-view>
     <ion-nav-title>{{program.title}}</ion-nav-title>
     <ion-nav-buttons side="right">
+        <button class="button button-dark button-clear" ng-click="refreshIframe()">
+          <i class="icon ion-refresh"></i>
+        </button>
         <button class="button button-dark button-clear" ng-click="markFavorite()">
           <i ng-class="{true: 'icon ion-ios-star', false: 'icon ion-ios-star-outline'}[program.favorite]"></i>
         </button>
@@ -13,13 +16,6 @@
                 margin: auto;
                 display: block;"
               scrolling="no"
-              refreshable="iframeRefresh"
               />
     </ion-content>
-
-    <div class="bar bar-footer">
-        <button class="button button-clear" ng-click="refreshIframe()">Left</button>
-        <div class="title">Title</div>
-        <button class="button button-clear">Right</button>
-    </div>
 </ion-view>

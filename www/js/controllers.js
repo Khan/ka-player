@@ -216,21 +216,29 @@ angular.module("starter.controllers", [
     angular.element(window).off('resize').on('resize',
         _.throttle(fitProgramToScreen, 1000));
 
-    // angular usually won't let us interpolate a variable in an iframe url.
-    // we need to manually specify that it's trusted.
-    // from http://stackoverflow.com/q/20045150/4839084
-    $scope.url = $sce.trustAsResourceUrl(
-        "https://www.khanacademy.org/computer-programming/ka-player/" +
-        programId + "/embedded?embed=yes&article=yes&editor=no&buttons=no" +
-        "&author=no&autoStart=yes&width=" + $scope.iframeSize +
-        "&height=" + $scope.iframeSize);
+    function updateIframeURL(){
+        // angular usually won't let us interpolate a variable in an iframe url.
+        // we need to manually specify that it's trusted.
+        // from http://stackoverflow.com/q/20045150/4839084
+        // and add a dummy query parameter so that we can programmatically
+        // refresh the iframe by making a trivial update to the URL.
+        $scope.url = $sce.trustAsResourceUrl(
+            "https://www.khanacademy.org/computer-programming/ka-player/" +
+            programId + "/embedded?embed=yes&article=yes&editor=no&buttons=no" +
+            "&author=no&autoStart=yes&width=" + $scope.iframeSize +
+            "&height=" + $scope.iframeSize + "&dummy=" + Date.now());
+    }
+
+    updateIframeURL();
 
     $scope.markFavorite = function() {
         $scope.program.favorite = !$scope.program.favorite;
     }
 
     $scope.refreshIframe = function() {
-        $scope.iframeRefresh = true;
+        // angular will re-render the iframe if the URL changes, which is
+        // just what we need
+        updateIframeURL();
     }
 })
 /**
@@ -335,39 +343,6 @@ angular.module("starter.controllers", [
       templateUrl: "templates/ion-search.html"
   };
 })
-
-/**
- * Makes an iframe refreshable.
- *
- * Usage:
- *     <iframe refreshable="tab.refresh"></iframe>
- * And:
- *     $scope.refreshIframe = function(){
- *        $scope.tab.refresh = true;
- *     }
- *
- * From http://stackoverflow.com/a/26883333/4839084.
- */
- .directive('refreshable', [function() {
-     return {
-         restrict: 'A',
-         scope: {
-             refresh: "=refreshable"
-         },
-         link: function(scope, element, attr) {
-             var refreshMe = function() {
-                 element.attr('src', element.attr('src'));
-             };
-
-             scope.$watch('refresh', function(newVal, oldVal) {
-                 if (scope.refresh) {
-                     scope.refresh = false;
-                     refreshMe();
-                 }
-             });
-         }
-     };
- }])
 
 /**
  * Contains all your programs and methods to manage them.
