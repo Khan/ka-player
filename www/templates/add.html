@@ -1,10 +1,13 @@
 <ion-view view-title="Go to Program">
     <ion-content>
-        <div class="item" style="white-space: normal;">
-          Enter the URL or ID of a program you'd like to play.
-          <p style="white-space: normal; font-style: italic;"><i>You can get the URL by visiting the program you want to play on <a href="https://www.khanacademy.org/computing" onclick="window.open('https://www.khanacademy.org/computing', '_system')">Khan Academy</a>, and clicking the &ldquo;Share&rdquo; button.</i></p>
-
+        <div class="item item-text-wrap">
+            Enter the URL or ID of a program you'd like to play.
+            <em>You can get the URL by visiting the program you want to play on
+                <a href="javascript: void 0;" onclick="window.open('https://www.khanacademy.org/computing', '_system')">
+                          Khan Academy
+                </a> and clicking the &ldquo;Share&rdquo; button.</em>
         </div>
+
         <label class="item item-input">
             <input type="text" placeholder="Program URL or ID" ng-model="programURL" ng-change="onUpdateURL(programURL)">
         </label>
