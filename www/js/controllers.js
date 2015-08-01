@@ -313,35 +313,6 @@ angular.module("ka-player.controllers", [
 })
 
 /**
- * Adding an ion search directive taken from http://codepen.io/gastonbesada/pen/eqvJK
- */
-
-.directive('ionSearch', function() {
-  return {
-      restrict: 'E',
-      replace: true,
-      scope: {
-          getData: '&source',
-          model: '=?',
-          search: '=?filter'
-      },
-      link: function(scope, element, attrs) {
-          attrs.minLength = attrs.minLength || 0;
-          scope.placeholder = attrs.placeholder || '';
-          scope.search = {value: ''};
-
-          if (attrs.class)
-              element.addClass(attrs.class);
-
-          scope.clearSearch = function() {
-              scope.search.value = '';
-          };
-      },
-      templateUrl: "templates/ion-search.html"
-  };
-})
-
-/**
  * Contains all your programs and methods to manage them.
  * Only add a program here if you're intent on playing it.
  * A data store of programs the user has played or has favorited.
@@ -495,17 +466,6 @@ angular.module("ka-player.controllers", [
 
   return service;
 })
-/**
- * Renders a list item for a particular program.
- */
-.directive("kaplayerProgramListItem", function() {
-  return {
-    scope: {
-      program: '=program'
-    },
-    templateUrl: "templates/kaplayer-program-list-item.html"
-  }
-});
 
 var extractIdFromUrl = function(url) {
     // program url is in format
