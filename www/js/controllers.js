@@ -147,7 +147,10 @@ angular.module("ka-player.controllers", [])
      */
     $scope.addFavorite = function(){
         $scope.program.favorite = true;
-        programsService.insertProgram($scope.program);
+        // don't insert if the program already exists; that'll overwrite
+        if(!programsService.hasProgram($scope.program)){
+            programsService.insertProgram($scope.program);
+        }
     };
 })
 

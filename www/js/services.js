@@ -132,6 +132,18 @@ angular.module("ka-player.services", [
       },
 
       /**
+       * Returns true if the given program exists in the store.
+       * @param  {Object} program
+       * @return {boolean}         whether any program with the given id
+       *                           exists in the store.
+       */
+      hasProgram: function(program) {
+          return _.find($rootScope.programs, function(iteratee) {
+              return program.id === iteratee.id;
+          }) !== undefined;
+      },
+
+      /**
        * Returns the program with the given ID. The program must, of course,
        * exist within the programs store. Use loadProgram() to add a program
        * to the list.
