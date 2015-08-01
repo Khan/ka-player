@@ -67,12 +67,12 @@ angular.module('ka-player',
                 }
             }
         })
-        .state('app.makeYourOwn', {
-            url: '/makeYourOwn',
+        .state('app.create', {
+            url: '/create',
             views: {
                 'menuContent': {
-                    templateUrl: 'templates/makeYourOwn.html',
-                    controller: 'MakeYourOwnCtrl'
+                    templateUrl: 'templates/create.html',
+                    controller: 'CreateCtrl'
                 }
             }
         })

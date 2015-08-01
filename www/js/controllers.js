@@ -3,7 +3,7 @@ angular.module("ka-player.controllers", [])
 
 })
 
-.controller('MakeYourOwnCtrl', function($scope) {
+.controller('CreateCtrl', function($scope) {
 
 })
 
