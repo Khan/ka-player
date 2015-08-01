@@ -200,6 +200,7 @@ angular.module("ka-player.services", [
       var defaultIds = [
           6095780544249856, // Guess my number 2
           5238695889338368, // What apples are great for
+          5995007307677696, // Mini Putt
           938561708, // Mercury subspace
           6539939794780160 // Squirtle/Wartortle/Blastoise
       ];
