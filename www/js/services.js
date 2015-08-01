@@ -197,9 +197,21 @@ angular.module("ka-player.services", [
        */
       insertProgram: function(newProgram) {
           // remove any program with this id
-          $rootScope.programs = _.reject($rootScope.programs, function(program) {
-              return program.id === newProgram.id;
-          });
+          // we must modify the programs array in place because angular
+          // stops watching the variable if we set it to point to something
+          // new (i.e. _.filter won't work because it creates a new value)...
+          // ugh, manual iteration sucks
+          for (var i = 0; i < $rootScope.programs.length; i++) {
+              var program = $rootScope.programs[i];
+              if(program.id === newProgram.id) {
+                  $rootScope.programs.splice(i, 1);
+                  // there should be at most 1 version of this element
+                  // in the array, since if a 2nd was ever added it would have
+                  // been removed
+                  break;
+              }
+          }
+
           $rootScope.programs.push(newProgram);
           service._updateLocalStorage();
       },
@@ -212,11 +224,11 @@ angular.module("ka-player.services", [
   if (!wasStored) {
       // add in a bunch of default programs
       var defaultIds = [
-          6095780544249856, // Guess my number 2
           5238695889338368, // What apples are great for
           5995007307677696, // Mini Putt
           938561708, // Mercury subspace
-          6539939794780160 // Squirtle/Wartortle/Blastoise
+          6539939794780160, // Squirtle/Wartortle/Blastoise
+          6741785675169792 // Flying Car 3D
       ];
       var programPromises = _.map(defaultIds, service.addProgramById);
       $q.all(programPromises)
