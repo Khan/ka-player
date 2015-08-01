@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.ionicframework.kaplayer381201" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>ka-player</name>
+  <name>Khan Academy Player</name>
   <description>
-        An Ionic Framework and Cordova project.
+        Play your favorite Khan Academy CS programs on your phone.
     </description>
-  <author email="hi@ionicframework" href="http://ionicframework.com/">
-      Ionic Framework Team
+  <author email="neelmehta@college.harvard.edu" href="http://hathix.com/">
+      Neel Mehta
     </author>
   <content src="index.html"/>
   <access origin="*"/>

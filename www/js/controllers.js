@@ -228,6 +228,10 @@ angular.module("starter.controllers", [
     $scope.markFavorite = function() {
         $scope.program.favorite = !$scope.program.favorite;
     }
+
+    $scope.refreshIframe = function() {
+        $scope.iframeRefresh = true;
+    }
 })
 /**
  * Utilities to create a new Program object. A program object is a collection
@@ -331,6 +335,40 @@ angular.module("starter.controllers", [
       templateUrl: "templates/ion-search.html"
   };
 })
+
+/**
+ * Makes an iframe refreshable.
+ *
+ * Usage:
+ *     <iframe refreshable="tab.refresh"></iframe>
+ * And:
+ *     $scope.refreshIframe = function(){
+ *        $scope.tab.refresh = true;
+ *     }
+ *
+ * From http://stackoverflow.com/a/26883333/4839084.
+ */
+ .directive('refreshable', [function() {
+     return {
+         restrict: 'A',
+         scope: {
+             refresh: "=refreshable"
+         },
+         link: function(scope, element, attr) {
+             var refreshMe = function() {
+                 element.attr('src', element.attr('src'));
+             };
+
+             scope.$watch('refresh', function(newVal, oldVal) {
+                 if (scope.refresh) {
+                     scope.refresh = false;
+                     refreshMe();
+                 }
+             });
+         }
+     };
+ }])
+
 /**
  * Contains all your programs and methods to manage them.
  * Only add a program here if you're intent on playing it.
