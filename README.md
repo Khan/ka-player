@@ -12,4 +12,4 @@ $ cordova plugin add org.apache.cordova.inappbrowser
 $ ionic serve
 ```
 
-[Read how to run on your Android and iOS apps, too.](http://ionicframework.com/docs/ionic-cli-faq/)
+[Read how to run on your Android and iOS devices, too.](http://ionicframework.com/docs/ionic-cli-faq/)
